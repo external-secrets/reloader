@@ -33,8 +33,8 @@ type ConfigSpec struct {
 
 // NotificationSource represents a notification system configuration.
 type NotificationSource struct {
-	// Type of the notification source (e.g., AwsSqs, AzureEventGrid, GooglePubSub, HashicorpVault, Webhook, TCPSocket, KubernetesSecret).
-	// +kubebuilder:validation:Enum=AwsSqs;AzureEventGrid;GooglePubSub;HashicorpVault;Webhook;TCPSocket;KubernetesSecret
+	// Type of the notification source (e.g., AwsSqs, AzureEventGrid, GooglePubSub, HashicorpVault, Webhook, TCPSocket, KubernetesSecret, KubernetesConfigMap).
+	// +kubebuilder:validation:Enum=AwsSqs;AzureEventGrid;GooglePubSub;HashicorpVault;Webhook;TCPSocket;KubernetesSecret;KubernetesConfigMap
 	// +required
 	Type string `json:"type"`
 

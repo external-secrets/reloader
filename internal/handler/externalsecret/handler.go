@@ -164,6 +164,20 @@ func (h *Handler) _references(obj client.Object, secretIdentifier string) (bool,
 			}
 		}
 	}
+
+	// Check target.template.templateFrom for ConfigMap/Secret references (e.g. when the
+	// trigger is a ConfigMap or in-cluster Secret and the ExternalSecret uses it for templating).
+	if es.Spec.Target.Template != nil {
+		for _, tf := range es.Spec.Target.Template.TemplateFrom {
+			if tf.ConfigMap != nil && tf.ConfigMap.Name == secretIdentifier {
+				return true, nil
+			}
+			if tf.Secret != nil && tf.Secret.Name == secretIdentifier {
+				return true, nil
+			}
+		}
+	}
+
 	return false, nil
 }
 

@@ -262,6 +262,58 @@ var _ = Describe("Reloader Controller", func() {
 			assertAnnotations(fakeClient, "test-external-secret-datafrom-find")
 		})
 	})
+
+	Context("When a secret rotation event is received and ExternalSecret uses target.template.templateFrom.configMap", func() {
+		It("should annotate the ExternalSecret when templateFrom.configMap.name matches the event secret identifier", func() {
+			configMapName := "operator-config"
+			esName := "test-external-secret-templatefrom"
+
+			// Update config to watch this ExternalSecret by name
+			updatedConfig := &esov1.Config{}
+			Expect(fakeClient.Get(ctx, types.NamespacedName{Name: config.Name, Namespace: config.Namespace}, updatedConfig)).To(Succeed())
+			updatedConfig.Spec.DestinationsToWatch[0].ExternalSecret.Names = append(
+				updatedConfig.Spec.DestinationsToWatch[0].ExternalSecret.Names,
+				esName,
+			)
+			Expect(fakeClient.Update(ctx, updatedConfig)).To(Succeed())
+			_, err := reconciler.Reconcile(ctx, reconcile.Request{
+				NamespacedName: types.NamespacedName{Name: config.Name, Namespace: config.Namespace},
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			// Create ExternalSecret that references the ConfigMap via templateFrom (e.g. ConfigMap-triggered event)
+			externalSecret = &esv1.ExternalSecret{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      esName,
+					Namespace: "default",
+				},
+				Spec: esv1.ExternalSecretSpec{
+					Target: esv1.ExternalSecretTarget{
+						Template: &esv1.ExternalSecretTemplate{
+							TemplateFrom: []esv1.TemplateFrom{
+								{
+									ConfigMap: &esv1.TemplateRef{
+										Name:  configMapName,
+										Items: []esv1.TemplateRefItem{{Key: "config", TemplateAs: esv1.TemplateScopeValues}},
+									},
+								},
+							},
+						},
+					},
+				},
+			}
+			Expect(fakeClient.Create(context.Background(), externalSecret)).To(Succeed())
+
+			// Send event with ConfigMap name as identifier (as would happen for KubernetesConfigMap source)
+			eventChan <- events.SecretRotationEvent{
+				SecretIdentifier:  configMapName,
+				RotationTimestamp: "2024-09-19T12:00:00Z",
+				TriggerSource:     "KubernetesConfigMap",
+			}
+
+			assertAnnotationsWithSource(fakeClient, esName, "2024-09-19T12:00:00Z", "KubernetesConfigMap")
+		})
+	})
 })
 
 func assertAnnotations(fakeClient client.Client, secretName string) {
@@ -307,6 +359,32 @@ func assertNotWatchedAnnotations(fakeClient client.Client, secretName string) {
 		annotations := updatedES.GetAnnotations()
 		if annotations != nil {
 			return fmt.Errorf("ExternalSecret annotations should not be nil")
+		}
+		return nil
+	}, "5s", "500ms").Should(Succeed())
+}
+
+func assertAnnotationsWithSource(fakeClient client.Client, secretName, expectedTimestamp, expectedTriggerSource string) {
+	updatedES := &esv1.ExternalSecret{}
+	key := types.NamespacedName{
+		Namespace: "default",
+		Name:      secretName,
+	}
+	Eventually(func() error {
+		updatedES = &esv1.ExternalSecret{}
+		err := fakeClient.Get(context.Background(), key, updatedES)
+		if err != nil {
+			return err
+		}
+		annotations := updatedES.GetAnnotations()
+		if annotations == nil {
+			return fmt.Errorf("ExternalSecret annotations should not be nil")
+		}
+		if annotations["reloader/last-rotated"] != expectedTimestamp {
+			return fmt.Errorf("reloader/last-rotated annotation should be %q, got %q", expectedTimestamp, annotations["reloader/last-rotated"])
+		}
+		if annotations["reloader/trigger-source"] != expectedTriggerSource {
+			return fmt.Errorf("reloader/trigger-source annotation should be %q, got %q", expectedTriggerSource, annotations["reloader/trigger-source"])
 		}
 		return nil
 	}, "5s", "500ms").Should(Succeed())

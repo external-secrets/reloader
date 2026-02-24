@@ -94,6 +94,8 @@ func (r *ReloaderReconciler) SetupWithManager(mgr ctrl.Manager) error {
 // +kubebuilder:rbac:groups=coordination.k8s.io,resources=leases,verbs=get;create;update;patch
 // For k8s Secret notification source
 // +kubebuilder:rbac:groups="",resources=secrets,verbs=get;list;watch
+// For k8s ConfigMap notification source
+// +kubebuilder:rbac:groups="",resources=configmaps,verbs=get;list;watch
 
 // Reconcile reconciles a Config object, ensuring that the internal state aligns with the desired state.
 // It fetches the Reloader instance, updates the internal cache, and manages notification listeners.

@@ -141,6 +141,8 @@ func generateListenerKey(source esov1alpha1.NotificationSource) (string, error) 
 		config = source.Mock
 	case schema.KUBERNETES_SECRET:
 		config = source.KubernetesSecret
+	case schema.KUBERNETES_CONFIG_MAP:
+		config = source.KubernetesConfigMap
 	default:
 		return "", fmt.Errorf("unsupported notification source type: %s", source.Type)
 	}
