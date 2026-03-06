@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 
-	v1alpha1 "github.com/external-secrets-inc/reloader/api/v1alpha1"
-	"github.com/external-secrets-inc/reloader/internal/events"
-	"github.com/external-secrets-inc/reloader/internal/listener/schema"
+	v1alpha1 "github.com/external-secrets/reloader/api/v1alpha1"
+	"github.com/external-secrets/reloader/internal/events"
+	"github.com/external-secrets/reloader/internal/listener/schema"
 	"github.com/go-logr/logr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )

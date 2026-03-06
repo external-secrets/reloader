@@ -18,7 +18,7 @@ import (
 	"errors"
 	"testing"
 
-	v1alpha1 "github.com/external-secrets-inc/reloader/api/v1alpha1"
+	v1alpha1 "github.com/external-secrets/reloader/api/v1alpha1"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	corev1 "k8s.io/api/core/v1"

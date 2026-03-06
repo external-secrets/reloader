@@ -81,7 +81,7 @@ if settings.get('debug').get('enabled'):
 
 
 docker_build_with_restart(
-    'ghcr.io/external-secrets-inc/reloader',
+    'ghcr.io/external-secrets/reloader',
     '.',
     dockerfile = dockerfile,
     entrypoint = entrypoint,

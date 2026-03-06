@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"cloud.google.com/go/pubsub" //nolint:staticcheck
-	v1alpha1 "github.com/external-secrets-inc/reloader/api/v1alpha1"
-	"github.com/external-secrets-inc/reloader/internal/events"
-	"github.com/external-secrets-inc/reloader/internal/listener/schema"
-	gcpModel "github.com/external-secrets-inc/reloader/pkg/models/gcp"
+	v1alpha1 "github.com/external-secrets/reloader/api/v1alpha1"
+	"github.com/external-secrets/reloader/internal/events"
+	"github.com/external-secrets/reloader/internal/listener/schema"
+	gcpModel "github.com/external-secrets/reloader/pkg/models/gcp"
 	"github.com/go-logr/logr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )

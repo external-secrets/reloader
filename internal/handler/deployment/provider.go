@@ -3,8 +3,8 @@ package deployment
 import (
 	"context"
 
-	"github.com/external-secrets-inc/reloader/api/v1alpha1"
-	"github.com/external-secrets-inc/reloader/internal/handler/schema"
+	"github.com/external-secrets/reloader/api/v1alpha1"
+	"github.com/external-secrets/reloader/internal/handler/schema"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 

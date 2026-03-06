@@ -5,12 +5,12 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/external-secrets-inc/reloader/api/v1alpha1"
-	"github.com/external-secrets-inc/reloader/internal/events"
-	"github.com/external-secrets-inc/reloader/internal/listener/schema"
-	"github.com/external-secrets-inc/reloader/internal/util/mapper"
-	listenerAWS "github.com/external-secrets-inc/reloader/pkg/listener/aws"
-	modelAWS "github.com/external-secrets-inc/reloader/pkg/models/aws"
+	"github.com/external-secrets/reloader/api/v1alpha1"
+	"github.com/external-secrets/reloader/internal/events"
+	"github.com/external-secrets/reloader/internal/listener/schema"
+	"github.com/external-secrets/reloader/internal/util/mapper"
+	listenerAWS "github.com/external-secrets/reloader/pkg/listener/aws"
+	modelAWS "github.com/external-secrets/reloader/pkg/models/aws"
 	"github.com/go-logr/logr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )

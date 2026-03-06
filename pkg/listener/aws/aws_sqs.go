@@ -11,8 +11,8 @@ import (
 	"github.com/go-logr/logr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	authAWS "github.com/external-secrets-inc/reloader/pkg/auth/aws"
-	modelAWS "github.com/external-secrets-inc/reloader/pkg/models/aws"
+	authAWS "github.com/external-secrets/reloader/pkg/auth/aws"
+	modelAWS "github.com/external-secrets/reloader/pkg/models/aws"
 )
 
 type SQSClientInterface interface {

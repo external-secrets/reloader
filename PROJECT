@@ -6,7 +6,7 @@ domain: external-secrets.io
 layout:
 - go.kubebuilder.io/v4
 projectName: reloader
-repo: github.com/external-secrets-inc/reloader
+repo: github.com/external-secrets/reloader
 resources:
 - api:
     crdVersion: v1
@@ -15,6 +15,6 @@ resources:
   domain: external-secrets.io
   group: reloader.external-secrets.io
   kind: Config
-  path: github.com/external-secrets-inc/reloader/api/v1alpha1
+  path: github.com/external-secrets/reloader/api/v1alpha1
   version: v1alpha1
 version: "3"

@@ -20,9 +20,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/external-secrets-inc/reloader/internal/events"
-	"github.com/external-secrets-inc/reloader/internal/handler"
 	esv1 "github.com/external-secrets/external-secrets/apis/externalsecrets/v1"
+	"github.com/external-secrets/reloader/internal/events"
+	"github.com/external-secrets/reloader/internal/handler"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -33,8 +33,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	esov1 "github.com/external-secrets-inc/reloader/api/v1alpha1"
-	"github.com/external-secrets-inc/reloader/internal/listener"
+	esov1 "github.com/external-secrets/reloader/api/v1alpha1"
+	"github.com/external-secrets/reloader/internal/listener"
 )
 
 var _ = Describe("Reloader Controller", func() {

@@ -12,7 +12,7 @@ import (
 	iam "cloud.google.com/go/iam/credentials/apiv1"
 	"cloud.google.com/go/iam/credentials/apiv1/credentialspb"
 	secretmanager "cloud.google.com/go/secretmanager/apiv1"
-	relv1 "github.com/external-secrets-inc/reloader/api/v1alpha1"
+	relv1 "github.com/external-secrets/reloader/api/v1alpha1"
 	"github.com/googleapis/gax-go/v2"
 	"golang.org/x/oauth2"
 	"google.golang.org/api/option"

@@ -40,7 +40,6 @@ env:
   TAG_SUFFIX: ${{ inputs.tag-suffix }}
   ARCH: ${{ inputs.build-arch }}
   DOCKERFILE: ${{ inputs.dockerfile }}
-  IS_FORK: ${{ inputs.username == '' && 'true' || 'false' }}
 
 jobs:
   build-publish:
@@ -86,7 +85,7 @@ jobs:
 
       - name: Login to Docker
         uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
-        if: env.IS_FORK == 'false'
+        if: github.event.pull_request.head.repo.full_name != github.repository
         with:
           registry: ghcr.io
           username: ${{ inputs.username }}
@@ -111,7 +110,7 @@ jobs:
           echo "image-tag=${TAG}" >> $GITHUB_OUTPUT
 
       - name: Build & Publish Artifacts
-        if: env.IS_FORK == 'false'
+        if: github.event.pull_request.head.repo.full_name == github.repository
         shell: bash
         env:
           IMAGE_TAG: ${{ steps.container_info.outputs.image-tag }}
@@ -122,7 +121,7 @@ jobs:
         run: make docker.build
 
       - name: Build & Publish Artifacts fork
-        if: env.IS_FORK == 'true'
+        if: github.event.pull_request.head.repo.full_name != github.repository
         shell: bash
         env:
           IMAGE_TAG: ${{ steps.container_info.outputs.image-tag }}
@@ -131,7 +130,7 @@ jobs:
         run: make docker.build
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 # master
+        uses: aquasecurity/trivy-action@97e0b3872f55f89b95b2f65b3dbab56962816478 # v0.34.2
         with:
           image-ref: ${{ inputs.image-name }}:${{ steps.container_info.outputs.image-tag }}
           format: 'table'

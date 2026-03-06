@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/external-secrets-inc/reloader/internal/events"
+	"github.com/external-secrets/reloader/internal/events"
 )
 
 // MockNotificationListener is a mock implementation of a notification listener for secret rotation events.

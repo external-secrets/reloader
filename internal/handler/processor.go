@@ -7,9 +7,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	esov1alpha1 "github.com/external-secrets-inc/reloader/api/v1alpha1"
-	"github.com/external-secrets-inc/reloader/internal/events"
-	"github.com/external-secrets-inc/reloader/internal/handler/schema"
+	esov1alpha1 "github.com/external-secrets/reloader/api/v1alpha1"
+	"github.com/external-secrets/reloader/internal/events"
+	"github.com/external-secrets/reloader/internal/handler/schema"
 )
 
 type EventHandler struct {

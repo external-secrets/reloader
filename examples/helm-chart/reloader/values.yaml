@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: oci.external-secrets.io/external-secrets-inc/reloader
+  repository: oci.external-secrets.io/external-secrets/reloader
   pullPolicy: IfNotPresent
   tag: ""
 

@@ -8,9 +8,9 @@ External Secrets Reloader Allows you to trigger reloads dynamically to Resources
 Install from our release:
 ```
 ## Get Release
-latest=$(curl -L https://api.github.com/repos/external-secrets-inc/reloader/releases/latest | jq -r .tag_name)
+latest=$(curl -L https://api.github.com/repos/external-secrets/reloader/releases/latest | jq -r .tag_name)
 ## apply manifest
-curl -L https://github.com/external-secrets-inc/reloader/releases/download/$latest/bundle.yaml | kubectl apply -f -
+curl -L https://github.com/external-secrets/reloader/releases/download/$latest/bundle.yaml | kubectl apply -f -
 ```
 
 Configure it to watch Secret Changes and Trigger Deployments:
@@ -62,4 +62,4 @@ Documentation is [hosted in here](https://docs.externalsecrets.com). We are curr
  Anyone is free to come and contribute! Please note our [CLA](./CLA.md) and our [Code of Conduct](./CODE_OF_CONDUCT.md) before contributing.
 
  ## Community Meetings
- So far, we did not organize any community meetings. If you'd like to see one, [open a discussion](https://github.com/external-secrets-inc/reloader/discussions)!
+ So far, we did not organize any community meetings. If you'd like to see one, [open a discussion](https://github.com/external-secrets/reloader/discussions)!

@@ -9,8 +9,8 @@ import (
 	"golang.org/x/oauth2/google"
 	kclient "sigs.k8s.io/controller-runtime/pkg/client"
 
-	v1alpha1 "github.com/external-secrets-inc/reloader/api/v1alpha1"
-	"github.com/external-secrets-inc/reloader/internal/util/resolvers"
+	v1alpha1 "github.com/external-secrets/reloader/api/v1alpha1"
+	"github.com/external-secrets/reloader/internal/util/resolvers"
 )
 
 const (

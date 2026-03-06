@@ -8,9 +8,9 @@ import (
 	sqstypes "github.com/aws/aws-sdk-go-v2/service/sqs/types"
 	"github.com/go-logr/logr"
 
-	"github.com/external-secrets-inc/reloader/internal/events"
-	"github.com/external-secrets-inc/reloader/internal/listener/schema"
-	awsListener "github.com/external-secrets-inc/reloader/pkg/listener/aws"
+	"github.com/external-secrets/reloader/internal/events"
+	"github.com/external-secrets/reloader/internal/listener/schema"
+	awsListener "github.com/external-secrets/reloader/pkg/listener/aws"
 )
 
 // Constants for authentication methods.

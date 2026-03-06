@@ -36,8 +36,8 @@ import (
 	externalsecrets "github.com/external-secrets/external-secrets/apis/externalsecrets/v1"
 	pushsecrets "github.com/external-secrets/external-secrets/apis/externalsecrets/v1alpha1"
 
-	"github.com/external-secrets-inc/reloader/api/v1alpha1"
-	"github.com/external-secrets-inc/reloader/internal/controller"
+	"github.com/external-secrets/reloader/api/v1alpha1"
+	"github.com/external-secrets/reloader/internal/controller"
 	// +kubebuilder:scaffold:imports
 )
 
