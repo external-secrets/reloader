@@ -10,7 +10,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 
-	"github.com/external-secrets-inc/reloader/api/v1alpha1"
+	"github.com/external-secrets/reloader/api/v1alpha1"
 )
 
 func externalSecretWithTemplateFromConfigMap(name string, configMapName string) *esov1.ExternalSecret {

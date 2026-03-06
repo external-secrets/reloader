@@ -5,8 +5,8 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	esov1alpha1 "github.com/external-secrets-inc/reloader/api/v1alpha1"
-	"github.com/external-secrets-inc/reloader/internal/listener/schema"
+	esov1alpha1 "github.com/external-secrets/reloader/api/v1alpha1"
+	"github.com/external-secrets/reloader/internal/listener/schema"
 )
 
 func TestGenerateListenerKey_KubernetesConfigMap(t *testing.T) {
