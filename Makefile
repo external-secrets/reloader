@@ -128,8 +128,8 @@ docker.tag:  ## Emit IMAGE_TAG
 docker.build: $(addprefix build-,$(ARCH)) ## Build the docker image
 	@$(INFO) docker build
 	echo docker build -f $(DOCKERFILE) . $(DOCKER_BUILD_ARGS) -t ${IMG}:${IMAGE_TAG}
-	DOCKER_BUILDKIT=1 docker build -f $(DOCKERFILE) . $(DOCKER_BUILD_ARGS) -t ${IMG}:${IMAGE_TAG}
-	@$(OK) docker build
+	docker buildx -f $(DOCKERFILE) . $(DOCKER_BUILD_ARGS) -t ${IMG}:${IMAGE_TAG}
+	@$(OK) docker buildx
 
 
 .PHONY: docker-push
