@@ -51,19 +51,21 @@ type AzureEventGridListener struct {
 func (a *AzureEventGridListener) Start() error {
 	a.logger.Info("Starting Event Grid listener")
 
-	// Create a handler for each subscription
+	mux := http.NewServeMux()
 	for _, subscription := range a.config.Subscriptions {
 		path := fmt.Sprintf("/%s", subscription)
 		a.logger.Info("Registering handler for path", "path", path)
-		http.HandleFunc(path, eventHandler(a))
+		mux.HandleFunc(path, eventHandler(a))
 	}
 
 	addr := fmt.Sprintf("%s:%d", a.config.Host, a.config.Port)
+	a.server = &http.Server{Addr: addr, Handler: mux}
 	a.logger.Info("Starting server", "addr", addr)
-	if err := http.ListenAndServe(addr, nil); err != nil {
-		a.logger.Error(err, "Failed to start server")
-		return err
-	}
+	go func() {
+		if err := a.server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			a.logger.Error(err, "Failed to start server")
+		}
+	}()
 	return nil
 }
 

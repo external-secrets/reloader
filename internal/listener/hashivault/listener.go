@@ -50,8 +50,13 @@ func (h *HashicorpVault) processFn(message []byte) {
 			RotationTimestamp: time.Now().Format("2006-01-02-15-04-05.000"),
 			TriggerSource:     schema.HASHICORP_VAULT,
 		}
-		h.eventChan <- event
-		h.logger.V(1).Info("Published event to eventChan", "Event", event)
+		select {
+		case h.eventChan <- event:
+			h.logger.V(1).Info("Published event to eventChan", "Event", event)
+		case <-h.context.Done():
+			h.logger.Info("Context cancelled, dropping event")
+			return
+		}
 	default:
 		h.logger.V(2).Info("Non-Applicable Operation", "Operation", msg.AuthRequest.Operation)
 	}
