@@ -122,14 +122,14 @@ docker.tag:  ## Emit IMAGE_TAG
 	@echo $(IMAGE_TAG)
 
 # If you wish to build the manager image targeting other platforms you can use the --platform flag.
-# (i.e. docker build --platform linux/arm64). However, you must enable docker buildKit for it.
+# (i.e. docker buildx build --platform linux/arm64). However, you must enable docker buildKit for it.
 # More info: https://docs.docker.com/develop/develop-images/build_enhancements/
 .PHONY: docker.build
 docker.build: $(addprefix build-,$(ARCH)) ## Build the docker image
-	@$(INFO) docker build
-	echo docker build -f $(DOCKERFILE) . $(DOCKER_BUILD_ARGS) -t ${IMG}:${IMAGE_TAG}
-	docker buildx -f $(DOCKERFILE) . $(DOCKER_BUILD_ARGS) -t ${IMG}:${IMAGE_TAG}
-	@$(OK) docker buildx
+	@$(INFO) docker buildx build
+	echo docker buildx build -f $(DOCKERFILE) . $(DOCKER_BUILD_ARGS) -t ${IMG}:${IMAGE_TAG}
+	docker buildx build -f $(DOCKERFILE) . $(DOCKER_BUILD_ARGS) -t ${IMG}:${IMAGE_TAG}
+	@$(OK) docker buildx build
 
 
 .PHONY: docker-push
