@@ -26,7 +26,7 @@ func (p *Provider) CreateListener(ctx context.Context, config *v1alpha1.Notifica
 		eventChan: eventChan,
 		logger:    logger,
 	}
-	h.SetProcessFn(h.processFn)
+	h.SetProcessFn(h.defaultProcess)
 	return h, nil
 }
 

@@ -54,9 +54,19 @@ func (h *TCPSocket) handleConnection(listener net.Listener) {
 		if h.context.Err() != nil {
 			return
 		}
+		if tl, ok := listener.(*net.TCPListener); ok {
+			_ = tl.SetDeadline(time.Now().Add(1 * time.Second))
+		}
 		conn, err := listener.Accept()
 		if err != nil {
+			if ne, ok := err.(net.Error); ok && ne.Timeout() {
+				continue
+			}
+			if h.context.Err() != nil {
+				return
+			}
 			h.logger.Error(err, "Error accepting connection")
+			continue
 		}
 		go h.readMessage(conn)
 	}
@@ -84,8 +94,13 @@ func (h *TCPSocket) defaultProcess(message []byte) {
 			RotationTimestamp: time.Now().Format("2006-01-02-15-04-05.000"),
 			TriggerSource:     schema.TCP_SOCKET,
 		}
-		h.eventChan <- event
-		h.logger.V(1).Info("Published event to eventChan", "Event", event)
+		select {
+		case h.eventChan <- event:
+			h.logger.V(1).Info("Published event to eventChan", "Event", event)
+		case <-h.context.Done():
+			h.logger.Info("Context cancelled, dropping event")
+			return
+		}
 	default:
 		h.logger.Error(fmt.Errorf("secretIdentifier must be type string"), "Identifier", v)
 	}

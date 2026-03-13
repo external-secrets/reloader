@@ -13,7 +13,7 @@ import (
 	"github.com/external-secrets/reloader/api/v1alpha1"
 	"github.com/external-secrets/reloader/internal/events"
 	"github.com/external-secrets/reloader/internal/listener/schema"
-	"github.com/external-secrets/reloader/pkg/util"
+	"github.com/external-secrets/reloader/internal/util"
 	"github.com/go-logr/logr"
 	authenticationv1 "k8s.io/api/authentication/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

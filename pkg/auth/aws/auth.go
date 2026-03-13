@@ -9,7 +9,7 @@ import (
 	awscreds "github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
 	modelAWS "github.com/external-secrets/reloader/pkg/models/aws"
-	"github.com/external-secrets/reloader/pkg/util"
+	"github.com/external-secrets/reloader/internal/util"
 	"github.com/go-logr/logr"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
