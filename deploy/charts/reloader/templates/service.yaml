@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "reloader.fullname" . }}
+  namespace: {{ include "reloader.namespace" . }}
+  labels:
+    {{- include "reloader.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "reloader.selectorLabels" . | nindent 4 }}
+---
+{{- if .Values.service.webhook.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "reloader.fullname" . }}-webhook
+  namespace: {{ include "reloader.namespace" . }}
+  labels:
+    {{- include "reloader.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.webhook.type }}
+  ports:
+    - port: {{ .Values.service.webhook.port }}
+      targetPort: {{ .Values.service.webhook.targetPort }}
+      protocol: TCP
+      name: webhook
+  selector:
+    {{- include "reloader.selectorLabels" . | nindent 4 }}
+{{- end }}
+---
+{{- if .Values.service.socket.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "reloader.fullname" . }}-socket
+  namespace: {{ include "reloader.namespace" . }}
+  labels:
+    {{- include "reloader.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.socket.type }}
+  ports:
+    - port: {{ .Values.service.socket.port }}
+      targetPort: {{ .Values.service.socket.targetPort }}
+      protocol: TCP
+      name: socket
+  selector:
+    {{- include "reloader.selectorLabels" . | nindent 4 }}
+{{- end }}

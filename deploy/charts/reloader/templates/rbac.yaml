@@ -1,0 +1,148 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "reloader.fullname" . }}-controller
+  labels:
+    {{- include "reloader.labels" . | nindent 4 }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - secrets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - create
+  - get
+  - patch
+  - update
+- apiGroups:
+  - external-secrets.io
+  resources:
+  - externalsecrets
+  - pushsecrets
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - reloader.external-secrets.io
+  resources:
+  - configs
+  - configs/status
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - reloader.external-secrets.io
+  resources:
+  - configs/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - workflows.external-secrets.io
+  resources:
+  - workflowruntemplates
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - watch
+{{- if .Values.leaderElect }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "reloader.fullname" . }}-leaderelection
+  namespace: {{ include "reloader.namespace" . }}
+  labels:
+    {{- include "reloader.labels" . | nindent 4 }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "reloader.fullname" . }}-leaderelection
+  namespace: {{ include "reloader.namespace" . }}
+  labels:
+    {{- include "reloader.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "reloader.fullname" . }}-leaderelection
+subjects:
+- kind: ServiceAccount
+  name: {{ include "reloader.serviceAccountName" . }}
+  namespace: {{ include "reloader.namespace" . }}
+{{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "reloader.fullname" . }}-controller
+  labels:
+    {{- include "reloader.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "reloader.fullname" . }}-controller
+subjects:
+- kind: ServiceAccount
+  name: {{ include "reloader.serviceAccountName" . }}
+  namespace: {{ include "reloader.namespace" . }}
+{{- end }}

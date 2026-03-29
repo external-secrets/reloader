@@ -1,0 +1,3 @@
+{{- if .Values.installCRDs }}
+{{ .Files.Get "crds/reloader.external-secrets.io_configs.yaml" }}
+{{- end }}

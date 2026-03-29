@@ -1,0 +1,11 @@
+apiVersion: v2
+name: reloader
+description: Event-driven reloader for Kubernetes resources
+type: application
+version: 0.1.0
+appVersion: v0.1.0
+kubeVersion: ">= 1.19.0-0"
+home: https://github.com/external-secrets/reloader
+maintainers:
+  - name: Skarlso
+    email: gergely.brautigam@gmail.com

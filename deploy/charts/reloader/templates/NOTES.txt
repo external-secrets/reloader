@@ -1,0 +1,4 @@
+external-secrets reloader has been deployed successfully in namespace {{ include "reloader.namespace" . }}.
+
+To get started, create a Config resource:
+  https://github.com/external-secrets/reloader
