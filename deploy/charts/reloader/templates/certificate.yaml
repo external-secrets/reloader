@@ -3,15 +3,19 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: {{ include "reloader.fullname" . }}
-  namespace: {{ template "reloader.namespace" . }}
+  namespace: {{ include "reloader.namespace" . }}
+  labels:
+    {{- include "reloader.labels" . | nindent 4 }}
 spec:
   secretName: {{ .Values.certificate.secretName }}
   issuerRef:
     kind: {{ .Values.certificate.issuer.kind }}
     name: {{ .Values.certificate.issuer.name }}
+  {{- if .Values.certificate.issuer.namespace }}
     namespace: {{ .Values.certificate.issuer.namespace }}
+  {{- end }}
   dnsNames:
-{{- range .Values.certificate.hosts }}
-  - {{ . | quote }}
-{{- end }}
+  {{- range .Values.certificate.hosts }}
+    - {{ . | quote }}
+  {{- end }}
 {{- end }}

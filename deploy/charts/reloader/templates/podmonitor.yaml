@@ -1,15 +1,15 @@
 {{- if .Values.podMonitor.enabled }}
+{{- if .Capabilities.APIVersions.Has "monitoring.coreos.com/v1" }}
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
   name: {{ include "reloader.fullname" . }}
-  namespace: {{ template "reloader.namespace" . }}
+  namespace: {{ include "reloader.namespace" . }}
   labels:
     {{- include "reloader.labels" . | nindent 4 }}
-    {{- range $key, $value := .Values.podMonitor.additionalLabels }}
-    {{ $key }}: {{ $value | quote }}
+    {{- with .Values.podMonitor.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
     {{- end }}
-
 spec:
   jobLabel: {{ include "reloader.fullname" . }}
   selector:
@@ -21,4 +21,5 @@ spec:
       interval: {{ .Values.podMonitor.interval }}
       scrapeTimeout: {{ .Values.podMonitor.scrapeTimeout }}
       honorLabels: {{ .Values.podMonitor.honorLabels }}
+{{- end }}
 {{- end }}

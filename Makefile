@@ -1,6 +1,4 @@
-# Image URL to use all building/pushing image targets
 IMG ?= ghcr.io/external-secrets/reloader
-# ENVTEST_K8S_VERSION refers to the version of kubebuilder assets to be downloaded by envtest binary.
 ENVTEST_K8S_VERSION = 1.35.0
 
 ARCH ?= amd64 arm64
@@ -8,7 +6,6 @@ BUILD_ARGS ?= CGO_ENABLED=0
 DOCKER_BUILD_ARGS ?=
 DOCKERFILE ?= Dockerfile
 OUTPUT_DIR  ?= bin
-# Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
 ifeq (,$(shell go env GOBIN))
 GOBIN=$(shell go env GOPATH)/bin
 else
@@ -27,14 +24,8 @@ ERR		= echo ${TIME} ${RED}[FAIL]${CNone}
 OK		= echo ${TIME} ${GREEN}[ OK ]${CNone}
 FAIL	= (echo ${TIME} ${RED}[FAIL]${CNone} && false)
 # ============================================================
-# CONTAINER_TOOL defines the container tool to be used for building images.
-# Be aware that the target commands are only tested with Docker which is
-# scaffolded by default. However, you might want to replace it to use other
-# tools. (i.e. podman)
 CONTAINER_TOOL ?= docker
 
-# Setting SHELL to bash allows bash commands to be executed by recipes.
-# Options are set to exit when a recipe line exits non-zero or a piped command fails.
 SHELL = /usr/bin/env bash -o pipefail
 .SHELLFLAGS = -ec
 
@@ -42,30 +33,18 @@ SHELL = /usr/bin/env bash -o pipefail
 all: build
 
 #Tags
-# check if there are any existing `git tag` values
 ifeq ($(shell git tag),)
-# no tags found - default to initial tag `v0.0.0`
 export VERSION := $(shell echo "v0.0.0-$$(git rev-list HEAD --count)-g$$(git describe --dirty --always)" | sed 's/-/./2' | sed 's/-/./2')
 else
-# use tags
 export VERSION := $(shell git describe --dirty --always --tags --exclude 'helm*' | sed 's/-/./2' | sed 's/-/./2')
 endif
 
 TAG_SUFFIX ?=
 export IMAGE_TAG ?= $(VERSION)$(TAG_SUFFIX)
 
-##@ General
+CHART_DIR ?= deploy/charts/reloader
 
-# The help target prints out all targets with their descriptions organized
-# beneath their categories. The categories are represented by '##@' and the
-# target descriptions by '##'. The awk command is responsible for reading the
-# entire set of makefiles included in this invocation, looking for lines of the
-# file as xyz: ## something, and then pretty-format the target and help. Then,
-# if there's a line with ##@ something, that gets pretty-printed as a category.
-# More info on the usage of ANSI control characters for terminal formatting:
-# https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_parameters
-# More info on the awk command:
-# http://linuxcommand.org/lc3_adv_awk.php
+##@ General
 
 .PHONY: help
 help: ## Display this help.
@@ -75,7 +54,7 @@ help: ## Display this help.
 
 .PHONY: manifests
 manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
-	$(CONTROLLER_GEN) rbac:roleName=manager-role crd webhook paths="./..." output:crd:artifacts:config=config/crd/bases
+	$(CONTROLLER_GEN) rbac:roleName=manager-role crd webhook paths="./..." output:crd:artifacts:config=$(CHART_DIR)/crds
 
 .PHONY: generate
 generate: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and DeepCopyObject method implementations.
@@ -121,9 +100,6 @@ run: manifests generate fmt vet ## Run a controller from your host.
 docker.tag:  ## Emit IMAGE_TAG
 	@echo $(IMAGE_TAG)
 
-# If you wish to build the manager image targeting other platforms you can use the --platform flag.
-# (i.e. docker buildx build --platform linux/arm64). However, you must enable docker buildKit for it.
-# More info: https://docs.docker.com/develop/develop-images/build_enhancements/
 .PHONY: docker.build
 docker.build: $(addprefix build-,$(ARCH)) ## Build the docker image
 	@$(INFO) docker buildx build
@@ -144,26 +120,34 @@ ifndef ignore-not-found
 endif
 
 .PHONY: install
-install: manifests kustomize ## Install CRDs into the K8s cluster specified in ~/.kube/config.
-	$(KUSTOMIZE) build config/crd | $(KUBECTL) apply -f -
+install: manifests ## Install the Helm chart into the K8s cluster specified in ~/.kube/config.
+	$(HELM) upgrade --install reloader $(CHART_DIR) \
+		--namespace external-secrets-reloader --create-namespace \
+		--set image.repository=$(IMG) \
+		--set image.tag=$(IMAGE_TAG)
 
 .PHONY: uninstall
-uninstall: manifests kustomize ## Uninstall CRDs from the K8s cluster specified in ~/.kube/config. Call with ignore-not-found=true to ignore resource not found errors during deletion.
-	$(KUSTOMIZE) build config/crd | $(KUBECTL) delete --ignore-not-found=$(ignore-not-found) -f -
+uninstall: ## Uninstall the Helm chart from the K8s cluster specified in ~/.kube/config.
+	$(HELM) uninstall reloader --namespace external-secrets-reloader --ignore-not-found=$(ignore-not-found)
 
-.PHONY: deploy
-deploy: manifests kustomize ## Deploy controller to the K8s cluster specified in ~/.kube/config.
-	cd config/manager-local && $(KUSTOMIZE) edit set image controller=${IMG}
-	$(KUSTOMIZE) build config/default | $(KUBECTL) apply -f -
+.PHONY: helm.lint
+helm.lint: ## Lint the Helm chart using chart-testing.
+	ct lint --config=.github/ci/ct.yaml --charts $(CHART_DIR)
+
+.PHONY: helm.template
+helm.template: manifests ## Render Helm chart templates locally.
+	$(HELM) template reloader $(CHART_DIR) \
+		--namespace external-secrets-reloader \
+		--set image.repository=$(IMG) \
+		--set image.tag=$(IMAGE_TAG)
 
 .PHONY: bundle
-bundle: manifests kustomize ## Create a bundle for the controller.
-	cd config/manager-local && $(KUSTOMIZE) edit set image controller=${IMG}
-	$(KUSTOMIZE) build config/default > bundle.yaml
-
-.PHONY: undeploy
-undeploy: kustomize ## Undeploy controller from the K8s cluster specified in ~/.kube/config. Call with ignore-not-found=true to ignore resource not found errors during deletion.
-	$(KUSTOMIZE) build config/default | $(KUBECTL) delete --ignore-not-found=$(ignore-not-found) -f -
+bundle: manifests ## Create a bundle.yaml from the Helm chart.
+	$(HELM) template reloader $(CHART_DIR) \
+		--namespace external-secrets-reloader \
+		--set image.repository=$(IMG) \
+		--set image.tag=$(IMAGE_TAG) \
+		--include-crds > bundle.yaml
 
 ##@ API Spec
 .PHONY: spec-generate
@@ -180,23 +164,15 @@ $(LOCALBIN):
 
 ## Tool Binaries
 KUBECTL ?= kubectl
-KUSTOMIZE ?= $(LOCALBIN)/kustomize
 CONTROLLER_GEN ?= $(LOCALBIN)/controller-gen
 ENVTEST ?= $(LOCALBIN)/setup-envtest
 GOLANGCI_LINT = $(LOCALBIN)/golangci-lint
-HELM ?= $(LOCALBIN)/helm
+HELM ?= helm
 
 ## Tool Versions
-KUSTOMIZE_VERSION ?= v5.8.1
 CONTROLLER_TOOLS_VERSION ?= v0.20.1
 ENVTEST_VERSION ?= release-0.23
 GOLANGCI_LINT_VERSION ?= v2.11.3
-HELM_VERSION ?= v4.1.1
-
-.PHONY: kustomize
-kustomize: $(KUSTOMIZE) ## Download kustomize locally if necessary.
-$(KUSTOMIZE): $(LOCALBIN)
-	$(call go-install-tool,$(KUSTOMIZE),sigs.k8s.io/kustomize/kustomize/v5,$(KUSTOMIZE_VERSION))
 
 .PHONY: controller-gen
 controller-gen: $(CONTROLLER_GEN) ## Download controller-gen locally if necessary.
@@ -213,10 +189,6 @@ golangci-lint: $(GOLANGCI_LINT) ## Download golangci-lint locally if necessary.
 $(GOLANGCI_LINT): $(LOCALBIN)
 	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $(LOCALBIN) $(GOLANGCI_LINT_VERSION)
 
-.PHONY: helm
-helm: $(HELM) ## Download helm locally if necessary.
-$(HELM): $(LOCALBIN)
-	$(call go-install-tool,$(HELM),helm.sh/helm/v3/cmd/helm,$(HELM_VERSION))
 
 # go-install-tool will 'go install' any package with custom target and name of binary, if it doesn't exist
 # $1 - target path with name of binary
