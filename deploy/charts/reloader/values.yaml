@@ -12,11 +12,6 @@ fullnameOverride: ""
 namespaceOverride: ""
 commonLabels: {}
 
-installCRDs: true
-
-crds:
-  annotations: {}
-
 leaderElect: false
 
 serviceAccount:
@@ -111,3 +106,31 @@ hostNetwork: false
 podDisruptionBudget:
   enabled: false
   minAvailable: 1
+
+podMonitor:
+  enabled: false
+  additionalLabels: {}
+  path: /metrics
+  interval: 60s
+  scrapeTimeout: 30s
+  honorLabels: false
+
+certificate:
+  enabled: false
+  secretName: ""
+  issuer:
+    kind: ""
+    name: ""
+    namespace: ""
+  hosts: []
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
