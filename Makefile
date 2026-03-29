@@ -120,18 +120,22 @@ ifndef ignore-not-found
 endif
 
 .PHONY: install
-install: helm manifests ## Install the Helm chart into the K8s cluster specified in ~/.kube/config.
+install: manifests ## Install the Helm chart into the K8s cluster specified in ~/.kube/config.
 	$(HELM) upgrade --install reloader $(CHART_DIR) \
 		--namespace external-secrets-reloader --create-namespace \
 		--set image.repository=$(IMG) \
 		--set image.tag=$(IMAGE_TAG)
 
 .PHONY: uninstall
-uninstall: helm ## Uninstall the Helm chart from the K8s cluster specified in ~/.kube/config.
+uninstall: ## Uninstall the Helm chart from the K8s cluster specified in ~/.kube/config.
 	$(HELM) uninstall reloader --namespace external-secrets-reloader --ignore-not-found=$(ignore-not-found)
 
+.PHONY: helm.lint
+helm.lint: ## Lint the Helm chart using chart-testing.
+	ct lint --config=.github/ci/ct.yaml --charts $(CHART_DIR)
+
 .PHONY: helm.template
-helm.template: helm manifests ## Render Helm chart templates locally.
+helm.template: manifests ## Render Helm chart templates locally.
 	$(HELM) template reloader $(CHART_DIR) \
 		--namespace external-secrets-reloader \
 		--set image.repository=$(IMG) \
@@ -155,13 +159,12 @@ KUBECTL ?= kubectl
 CONTROLLER_GEN ?= $(LOCALBIN)/controller-gen
 ENVTEST ?= $(LOCALBIN)/setup-envtest
 GOLANGCI_LINT = $(LOCALBIN)/golangci-lint
-HELM ?= $(LOCALBIN)/helm
+HELM ?= helm
 
 ## Tool Versions
 CONTROLLER_TOOLS_VERSION ?= v0.20.1
 ENVTEST_VERSION ?= release-0.23
 GOLANGCI_LINT_VERSION ?= v2.11.3
-HELM_VERSION ?= v4.1.1
 
 .PHONY: controller-gen
 controller-gen: $(CONTROLLER_GEN) ## Download controller-gen locally if necessary.
@@ -178,10 +181,6 @@ golangci-lint: $(GOLANGCI_LINT) ## Download golangci-lint locally if necessary.
 $(GOLANGCI_LINT): $(LOCALBIN)
 	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $(LOCALBIN) $(GOLANGCI_LINT_VERSION)
 
-.PHONY: helm
-helm: $(HELM) ## Download helm locally if necessary.
-$(HELM): $(LOCALBIN)
-	$(call go-install-tool,$(HELM),helm.sh/helm/v3/cmd/helm,$(HELM_VERSION))
 
 # go-install-tool will 'go install' any package with custom target and name of binary, if it doesn't exist
 # $1 - target path with name of binary
