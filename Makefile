@@ -141,6 +141,14 @@ helm.template: manifests ## Render Helm chart templates locally.
 		--set image.repository=$(IMG) \
 		--set image.tag=$(IMAGE_TAG)
 
+.PHONY: bundle
+bundle: manifests ## Create a bundle.yaml from the Helm chart.
+	$(HELM) template reloader $(CHART_DIR) \
+		--namespace external-secrets-reloader \
+		--set image.repository=$(IMG) \
+		--set image.tag=$(IMAGE_TAG) \
+		--include-crds > bundle.yaml
+
 ##@ API Spec
 .PHONY: spec-generate
 spec-generate: ## generate api reference documentation to go to the website
