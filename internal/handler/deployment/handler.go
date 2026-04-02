@@ -34,11 +34,11 @@ func (h *Handler) Filter(destination *v1alpha1.DestinationToWatch, event events.
 	}
 	logger := log.FromContext(h.ctx)
 	var deployments appsv1.DeploymentList
-	var opt client.ListOption
+	var opts []client.ListOption
 	if event.Namespace != "" {
-		opt = client.InNamespace(event.Namespace)
+		opts = append(opts, client.InNamespace(event.Namespace))
 	}
-	if err := h.client.List(h.ctx, &deployments, opt); err != nil {
+	if err := h.client.List(h.ctx, &deployments, opts...); err != nil {
 		return nil, fmt.Errorf("failed to list Deployments:%w", err)
 	}
 	for key, deployment := range deployments.Items {
