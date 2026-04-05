@@ -46,7 +46,7 @@ metadata:
 spec:
   notificationSources:
     - type: GooglePubSub
-      googlePubSub: # see how to configure pubsub in https://docs.externalsecrets.com
+      googlePubSub: # see how to configure pubsub in https://external-secrets.github.io/reloader
         subscriptionID: sm-reloader
         projectID: my-gcp-sm-project
   destinationsToWatch:
@@ -56,7 +56,7 @@ spec:
 ```
 
 ## Documentation
-Documentation is [hosted in here](https://docs.externalsecrets.com). We are currently working on a move so anyone can contribute to docs as well :smile:
+Documentation is [hosted in here](https://external-secrets.github.io/reloader). We are currently working on a move so anyone can contribute to docs as well :smile:
 
 ## Contributing
  Anyone is free to come and contribute! Please note our [CLA](./CLA.md) and our [Code of Conduct](./CODE_OF_CONDUCT.md) before contributing.
