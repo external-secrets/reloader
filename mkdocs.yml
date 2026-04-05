@@ -1,0 +1,54 @@
+site_name: External Secrets Reloader
+site_url: https://external-secrets.github.io/reloader
+repo_url: https://github.com/external-secrets/reloader
+repo_name: external-secrets/reloader
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: deep purple
+      accent: purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: deep purple
+      accent: purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - content.code.copy
+    - search.suggest
+    - search.highlight
+
+nav:
+  - Introduction: index.md
+  - Quickstart: quickstart.md
+  - Sources:
+      - GCP PubSub: sources/gcp-pubsub.md
+      - AWS SQS: sources/aws-sqs.md
+      - Azure Event Grid: sources/azure-eventgrid.md
+      - Hashicorp Vault: sources/vault.md
+      - Webhook: sources/webhook.md
+      - Kubernetes Secret: sources/kubernetes-secret.md
+  - Destinations:
+      - Deployments: destinations/deployments.md
+      - ExternalSecrets: destinations/external-secrets.md
+      - WorkflowRunTemplate: destinations/workflows.md
+  - Reference:
+      - API Reference: reference/api-reference.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true
