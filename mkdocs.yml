@@ -35,13 +35,17 @@ nav:
       - Azure Event Grid: sources/azure-eventgrid.md
       - Hashicorp Vault: sources/vault.md
       - Webhook: sources/webhook.md
+      - TCP Socket: sources/tcp-socket.md
       - Kubernetes Secret: sources/kubernetes-secret.md
+      - Kubernetes ConfigMap: sources/kubernetes-configmap.md
   - Destinations:
       - Deployments: destinations/deployments.md
       - ExternalSecrets: destinations/external-secrets.md
+      - PushSecrets: destinations/push-secrets.md
       - WorkflowRunTemplate: destinations/workflows.md
   - Reference:
       - API Reference: reference/api-reference.md
+      - Strategies: reference/strategies.md
 
 markdown_extensions:
   - admonition

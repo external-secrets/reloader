@@ -7,14 +7,16 @@ Reloader is a tool that allows to trigger kubernetes manifests updates based on 
 * [Azure EventGrid](sources/azure-eventgrid.md)
 * [Hashicorp Vault audit Logs](sources/vault.md)
 * [Generic Webhook](sources/webhook.md)
+* [TCP Socket](sources/tcp-socket.md)
 * [Kubernetes Secret](sources/kubernetes-secret.md)
+* [Kubernetes ConfigMap](sources/kubernetes-configmap.md)
 
 With it, it is possible to trigger manifest changes to multiple destinations:
 
-* [ExternalSecret](https://external-secrets.io/latest/introduction/getting-started/)
-* [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
-
-And many more to come!
+* [ExternalSecret](destinations/external-secrets.md)
+* [Deployments](destinations/deployments.md)
+* [PushSecret](destinations/push-secrets.md)
+* [WorkflowRunTemplate](destinations/workflows.md)
 
 ## Installing Reloader
 
