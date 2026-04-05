@@ -1,0 +1,2993 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://external-secrets.github.io/reloader/reference/api-reference/">
+      
+      
+        <link rel="prev" href="../../destinations/workflows/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>API Reference - External Secrets Reloader</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#api-reference" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="External Secrets Reloader" class="md-header__button md-logo" aria-label="External Secrets Reloader" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            External Secrets Reloader
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              API Reference
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/external-secrets/reloader" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    external-secrets/reloader
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="External Secrets Reloader" class="md-nav__button md-logo" aria-label="External Secrets Reloader" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    External Secrets Reloader
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/external-secrets/reloader" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    external-secrets/reloader
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickstart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sources
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Sources
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sources/gcp-pubsub/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GCP PubSub
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sources/aws-sqs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS SQS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sources/azure-eventgrid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Azure Event Grid
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sources/vault/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hashicorp Vault
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sources/webhook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Webhook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sources/kubernetes-secret/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubernetes Secret
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Destinations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Destinations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../destinations/deployments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../destinations/external-secrets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ExternalSecrets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../destinations/workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WorkflowRunTemplate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#kubernetes-crds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kubernetes CRDs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Kubernetes CRDs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reloaderexternal-secretsiov1alpha1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        reloader.external-secrets.io/v1alpha1
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="reloader.external-secrets.io/v1alpha1">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Config
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Types
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#awssdkauth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AWSSDKAuth
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#awssdksecretref" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AWSSDKSecretRef
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#awssqsconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AWSSQSConfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#azureeventgridconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AzureEventGridConfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#basicauth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BasicAuth
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bearertoken" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BearerToken
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#condition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Condition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conditionoperation-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ConditionOperation (string)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configspec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ConfigSpec
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploymentdestination" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DeploymentDestination
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#destinationtowatch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DestinationToWatch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#externalsecretdestination" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ExternalSecretDestination
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gcpsmauthsecretref" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GCPSMAuthSecretRef
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gcpworkloadidentity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GCPWorkloadIdentity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#googlepubsubauth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GooglePubSubAuth
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#googlepubsubconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GooglePubSubConfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hashicorpvaultconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HashicorpVaultConfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kubeconfigref" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KubeConfigRef
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kubernetesauth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KubernetesAuth
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kubernetessecretconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KubernetesSecretConfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matchstrategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MatchStrategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mockconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MockConfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#notificationsource" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NotificationSource
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#patchoperationconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PatchOperationConfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#retrypolicy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RetryPolicy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#secretkeyselector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SecretKeySelector
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#serviceaccountselector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ServiceAccountSelector
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tcpsocketconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TCPSocketConfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tokenref" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TokenRef
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#updatestrategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UpdateStrategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#updatestrategyoperation-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UpdateStrategyOperation (string)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#waitforcondition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WaitForCondition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#waitstrategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WaitStrategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webhookauth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebhookAuth
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webhookconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebhookConfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#kubernetes-crds" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kubernetes CRDs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Kubernetes CRDs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reloaderexternal-secretsiov1alpha1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        reloader.external-secrets.io/v1alpha1
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="reloader.external-secrets.io/v1alpha1">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Config
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Types
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#awssdkauth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AWSSDKAuth
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#awssdksecretref" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AWSSDKSecretRef
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#awssqsconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AWSSQSConfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#azureeventgridconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AzureEventGridConfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#basicauth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BasicAuth
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bearertoken" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BearerToken
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#condition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Condition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conditionoperation-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ConditionOperation (string)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configspec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ConfigSpec
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploymentdestination" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DeploymentDestination
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#destinationtowatch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DestinationToWatch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#externalsecretdestination" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ExternalSecretDestination
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gcpsmauthsecretref" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GCPSMAuthSecretRef
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gcpworkloadidentity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GCPWorkloadIdentity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#googlepubsubauth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GooglePubSubAuth
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#googlepubsubconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GooglePubSubConfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hashicorpvaultconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HashicorpVaultConfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kubeconfigref" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KubeConfigRef
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kubernetesauth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KubernetesAuth
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kubernetessecretconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KubernetesSecretConfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matchstrategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MatchStrategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mockconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MockConfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#notificationsource" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NotificationSource
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#patchoperationconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PatchOperationConfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#retrypolicy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RetryPolicy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#secretkeyselector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SecretKeySelector
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#serviceaccountselector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ServiceAccountSelector
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tcpsocketconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TCPSocketConfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tokenref" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TokenRef
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#updatestrategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UpdateStrategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#updatestrategyoperation-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UpdateStrategyOperation (string)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#waitforcondition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WaitForCondition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#waitstrategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WaitStrategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webhookauth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebhookAuth
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webhookconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebhookConfig
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h1>
+<h2 id="kubernetes-crds">Kubernetes CRDs<a class="headerlink" href="#kubernetes-crds" title="Permanent link">&para;</a></h2>
+<h3 id="reloaderexternal-secretsiov1alpha1"><code>reloader.external-secrets.io/v1alpha1</code><a class="headerlink" href="#reloaderexternal-secretsiov1alpha1" title="Permanent link">&para;</a></h3>
+<p>Package <code>v1alpha1</code> contains API Schema definitions for the Reloader <code>v1alpha1</code> API group.</p>
+<h4 id="config"><code>Config</code><a class="headerlink" href="#config" title="Permanent link">&para;</a></h4>
+<p>Config is the Schema for the Reloader Config API.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>apiVersion</code></td>
+<td>string</td>
+<td><code>reloader.external-secrets.io/v1alpha1</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>kind</code></td>
+<td>string</td>
+<td><code>Config</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#objectmeta-v1-meta">ObjectMeta</a></td>
+<td>Refer to Kubernetes API documentation for fields of <code>metadata</code>.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>spec</code></td>
+<td><a href="#configspec">ConfigSpec</a></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="types">Types<a class="headerlink" href="#types" title="Permanent link">&para;</a></h2>
+<h3 id="awssdkauth"><code>AWSSDKAuth</code><a class="headerlink" href="#awssdkauth" title="Permanent link">&para;</a></h3>
+<p>AWSSDKAuth contains authentication methods for AWS SDK.</p>
+<p><strong>Used by:</strong> <a href="#awssqsconfig">AWSSQSConfig</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>authMethod</code></td>
+<td>string</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>region</code></td>
+<td>string</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>serviceAccountRef</code></td>
+<td><a href="#serviceaccountselector">ServiceAccountSelector</a></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>secretRef</code></td>
+<td><a href="#awssdksecretref">AWSSDKSecretRef</a></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="awssdksecretref"><code>AWSSDKSecretRef</code><a class="headerlink" href="#awssdksecretref" title="Permanent link">&para;</a></h3>
+<p><strong>Used by:</strong> <a href="#awssdkauth">AWSSDKAuth</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>accessKeyIdSecretRef</code></td>
+<td><a href="#secretkeyselector">SecretKeySelector</a></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>secretAccessKeySecretRef</code></td>
+<td><a href="#secretkeyselector">SecretKeySelector</a></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="awssqsconfig"><code>AWSSQSConfig</code><a class="headerlink" href="#awssqsconfig" title="Permanent link">&para;</a></h3>
+<p>AWSSQSConfig contains configuration for AWS SDK.</p>
+<p><strong>Used by:</strong> <a href="#notificationsource">NotificationSource</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>queueURL</code></td>
+<td>string</td>
+<td>QueueURL is the URL of the AWS SDK queue.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>auth</code></td>
+<td><a href="#awssdkauth">AWSSDKAuth</a></td>
+<td>Authentication methods for AWS.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>numberOfMessages</code></td>
+<td>integer</td>
+<td>MaxNumberOfMessages specifies the maximum number of messages to retrieve from the SDK queue in a single request.</td>
+<td><code>default: 10</code></td>
+</tr>
+<tr>
+<td><code>waitTimeSeconds</code></td>
+<td>integer</td>
+<td>WaitTimeSeconds specifies the duration (in seconds) to wait for messages in the SDK queue before returning.</td>
+<td><code>default: 20</code></td>
+</tr>
+<tr>
+<td><code>visibilityTimeout</code></td>
+<td>integer</td>
+<td>VisibilityTimeout specifies the duration (in seconds) that a message received from the SDK queue is hidden from subsequent retrievals.</td>
+<td><code>default: 30</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="azureeventgridconfig"><code>AzureEventGridConfig</code><a class="headerlink" href="#azureeventgridconfig" title="Permanent link">&para;</a></h3>
+<p><strong>Used by:</strong> <a href="#notificationsource">NotificationSource</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>host</code></td>
+<td>string</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>port</code></td>
+<td>integer</td>
+<td></td>
+<td><code>default: 8080</code></td>
+</tr>
+<tr>
+<td><code>subscriptions</code></td>
+<td>string array</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="basicauth"><code>BasicAuth</code><a class="headerlink" href="#basicauth" title="Permanent link">&para;</a></h3>
+<p>BasicAuth contains basic authentication credentials.</p>
+<p><strong>Used by:</strong> <a href="#webhookauth">WebhookAuth</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>usernameSecretRef</code></td>
+<td><a href="#secretkeyselector">SecretKeySelector</a></td>
+<td>UsernameSecretRef contains a secret reference for the username</td>
+<td></td>
+</tr>
+<tr>
+<td><code>passwordSecretRef</code></td>
+<td><a href="#secretkeyselector">SecretKeySelector</a></td>
+<td>PasswordSecretRef contains a secret reference for the password</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="bearertoken"><code>BearerToken</code><a class="headerlink" href="#bearertoken" title="Permanent link">&para;</a></h3>
+<p>BearerToken contains the bearer token credentials.</p>
+<p><strong>Used by:</strong> <a href="#webhookauth">WebhookAuth</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bearerTokenSecretRef</code></td>
+<td><a href="#secretkeyselector">SecretKeySelector</a></td>
+<td>BearerTokenSecretRef references a Kubernetes Secret containing the bearer token.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="condition"><code>Condition</code><a class="headerlink" href="#condition" title="Permanent link">&para;</a></h3>
+<p><strong>Used by:</strong> <a href="#matchstrategy">MatchStrategy</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>value</code></td>
+<td>string</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>operation</code></td>
+<td><a href="#conditionoperation">ConditionOperation</a></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="conditionoperation-string"><code>ConditionOperation</code> <em>(string)</em><a class="headerlink" href="#conditionoperation-string" title="Permanent link">&para;</a></h3>
+<p><strong>Used by:</strong> <a href="#condition">Condition</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Equal</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>NotEqual</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Contains</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>NotContains</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>RegularExpression</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="configspec"><code>ConfigSpec</code><a class="headerlink" href="#configspec" title="Permanent link">&para;</a></h3>
+<p>ConfigSpec defines the desired state of a Reloader Config.</p>
+<p><strong>Used by:</strong> <a href="#config">Config</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>notificationSources</code></td>
+<td><a href="#notificationsource">NotificationSource</a> array</td>
+<td>NotificationSources specifies the notification systems to listen to.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>destinationsToWatch</code></td>
+<td><a href="#destinationtowatch">DestinationToWatch</a> array</td>
+<td>DestinationsToWatch specifies which secrets the controller should monitor.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="deploymentdestination"><code>DeploymentDestination</code><a class="headerlink" href="#deploymentdestination" title="Permanent link">&para;</a></h3>
+<p>Defines a DeploymentDestination. Behavior is a pod template annotations patch.</p>
+<ul>
+<li>Default <strong>UpdateStrategy</strong> is pod template annotations patch to trigger a new rollout.</li>
+<li>Default <strong>MatchStrategy</strong> matches secret keys using:<ul>
+<li><code>spec.template.spec.containers[*].env[*].valueFrom.secretKeyRef.name</code></li>
+<li><code>spec.template.spec.containers[*].envFrom.secretRef.name</code></li>
+</ul>
+</li>
+<li>Default <strong>WaitStrategy</strong> waits for rollout completion with a 3-minute grace period.</li>
+</ul>
+<p><strong>Used by:</strong> <a href="#destinationtowatch">DestinationToWatch</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>namespaceSelectors</code></td>
+<td><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselector-v1-meta">LabelSelector</a> array</td>
+<td>NamespaceSelectors selects namespaces based on labels. Manifest must be in a matching namespace.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>labelSelectors</code></td>
+<td><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselector-v1-meta">LabelSelector</a></td>
+<td>LabelSelectors selects resources by labels. Supports <code>matchLabels</code> and <code>matchExpressions</code>.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>names</code></td>
+<td>string array</td>
+<td>Names specifies resource names to watch. The resource must match one of the entries.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="destinationtowatch"><code>DestinationToWatch</code><a class="headerlink" href="#destinationtowatch" title="Permanent link">&para;</a></h3>
+<p>DestinationToWatch specifies the criteria for monitoring secrets in the cluster.</p>
+<p><strong>Used by:</strong> <a href="#configspec">ConfigSpec</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type</code></td>
+<td>enum[<code>ExternalSecret</code>, <code>Deployment</code>]</td>
+<td>Type specifies the kind of destination to watch.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>externalSecret</code></td>
+<td><a href="#externalsecretdestination">ExternalSecretDestination</a></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>deployment</code></td>
+<td><a href="#deploymentdestination">DeploymentDestination</a></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>updateStrategy</code></td>
+<td><a href="#updatestrategy">UpdateStrategy</a></td>
+<td>If not specified, the default update strategy is used.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>matchStrategy</code></td>
+<td><a href="#matchstrategy">MatchStrategy</a></td>
+<td>If not specified, the default match strategy is used.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>waitStrategy</code></td>
+<td><a href="#waitstrategy">WaitStrategy</a></td>
+<td>If not specified, the default wait strategy is used.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="externalsecretdestination"><code>ExternalSecretDestination</code><a class="headerlink" href="#externalsecretdestination" title="Permanent link">&para;</a></h3>
+<p>Defines an ExternalSecretDestination. Behavior is annotations patch.</p>
+<ul>
+<li>Default <strong>UpdateStrategy</strong>: annotations patch triggers externalSecret reconcile.</li>
+<li>Default <strong>MatchStrategy</strong>:<ul>
+<li><code>spec.data.remoteRef.key</code></li>
+<li><code>spec.dataFrom.remoteRef.key</code></li>
+<li>Regex match for <code>spec.dataFrom.find.name.regexp</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>Used by:</strong> <a href="#destinationtowatch">DestinationToWatch</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>namespaceSelectors</code></td>
+<td><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselector-v1-meta">LabelSelector</a> array</td>
+<td>NamespaceSelectors selects namespaces based on labels. Manifest must be in a matching namespace.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>labelSelectors</code></td>
+<td><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselector-v1-meta">LabelSelector</a></td>
+<td>LabelSelectors selects resources by labels. Supports <code>matchLabels</code> and <code>matchExpressions</code>.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>names</code></td>
+<td>string array</td>
+<td>Names specifies resource names to watch. The resource must match one of the entries.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="gcpsmauthsecretref"><code>GCPSMAuthSecretRef</code><a class="headerlink" href="#gcpsmauthsecretref" title="Permanent link">&para;</a></h3>
+<p><strong>Used by:</strong> <a href="#googlepubsubauth">GooglePubSubAuth</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>secretAccessKeySecretRef</code></td>
+<td><a href="#secretkeyselector">SecretKeySelector</a></td>
+<td>The SecretAccessKey is used for authentication</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="gcpworkloadidentity"><code>GCPWorkloadIdentity</code><a class="headerlink" href="#gcpworkloadidentity" title="Permanent link">&para;</a></h3>
+<p><strong>Used by:</strong> <a href="#googlepubsubauth">GooglePubSubAuth</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>serviceAccountRef</code></td>
+<td><a href="#serviceaccountselector">ServiceAccountSelector</a></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>clusterLocation</code></td>
+<td>string</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>clusterName</code></td>
+<td>string</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>clusterProjectID</code></td>
+<td>string</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="googlepubsubauth"><code>GooglePubSubAuth</code><a class="headerlink" href="#googlepubsubauth" title="Permanent link">&para;</a></h3>
+<p>GooglePubSubAuth contains authentication methods for Google Pub/Sub.</p>
+<p><strong>Used by:</strong> <a href="#googlepubsubconfig">GooglePubSubConfig</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>secretRef</code></td>
+<td><a href="#gcpsmauthsecretref">GCPSMAuthSecretRef</a></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>workloadIdentity</code></td>
+<td><a href="#gcpworkloadidentity">GCPWorkloadIdentity</a></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="googlepubsubconfig"><code>GooglePubSubConfig</code><a class="headerlink" href="#googlepubsubconfig" title="Permanent link">&para;</a></h3>
+<p>GooglePubSubConfig contains configuration for Google Pub/Sub.</p>
+<p><strong>Used by:</strong> <a href="#notificationsource">NotificationSource</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>subscriptionID</code></td>
+<td>string</td>
+<td>SubscriptionID is the ID of the Pub/Sub subscription.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>projectID</code></td>
+<td>string</td>
+<td>ProjectID is the GCP project ID where the subscription exists.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>auth</code></td>
+<td><a href="#googlepubsubauth">GooglePubSubAuth</a></td>
+<td>Authentication methods for Google Pub/Sub.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="hashicorpvaultconfig"><code>HashicorpVaultConfig</code><a class="headerlink" href="#hashicorpvaultconfig" title="Permanent link">&para;</a></h3>
+<p>HashicorpVault contains configuration for Hashicorp Vault notifications.</p>
+<p><strong>Used by:</strong> <a href="#notificationsource">NotificationSource</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>host</code></td>
+<td>string</td>
+<td>Host is the hostname or IP address to listen on.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>port</code></td>
+<td>integer</td>
+<td>Port is the port number to listen on.</td>
+<td><code>default: 8000</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="kubeconfigref"><code>KubeConfigRef</code><a class="headerlink" href="#kubeconfigref" title="Permanent link">&para;</a></h3>
+<p><strong>Used by:</strong> <a href="#kubernetesauth">KubernetesAuth</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>secretRef</code></td>
+<td><a href="#secretkeyselector">SecretKeySelector</a></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="kubernetesauth"><code>KubernetesAuth</code><a class="headerlink" href="#kubernetesauth" title="Permanent link">&para;</a></h3>
+<p><strong>Used by:</strong> <a href="#kubernetessecretconfig">KubernetesSecretConfig</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>kubeConfigRef</code></td>
+<td><a href="#kubeconfigref">KubeConfigRef</a></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>caBundle</code></td>
+<td>string</td>
+<td>Defines a CABundle if either <code>tokenRef</code> or <code>serviceAccountRef</code> are used.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>tokenRef</code></td>
+<td><a href="#tokenref">TokenRef</a></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>serviceAccountRef</code></td>
+<td><a href="#serviceaccountselector">ServiceAccountSelector</a></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="kubernetessecretconfig"><code>KubernetesSecretConfig</code><a class="headerlink" href="#kubernetessecretconfig" title="Permanent link">&para;</a></h3>
+<p>KubernetesSecretConfig contains configuration for Kubernetes notifications.</p>
+<p><strong>Used by:</strong> <a href="#notificationsource">NotificationSource</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>serverURL</code></td>
+<td>string</td>
+<td>Server URL</td>
+<td></td>
+</tr>
+<tr>
+<td><code>auth</code></td>
+<td><a href="#kubernetesauth">KubernetesAuth</a></td>
+<td>How to authenticate with Kubernetes. If not specified, default config is used.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="matchstrategy"><code>MatchStrategy</code><a class="headerlink" href="#matchstrategy" title="Permanent link">&para;</a></h3>
+<p><strong>Used by:</strong> <a href="#destinationtowatch">DestinationToWatch</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td>string</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>conditions</code></td>
+<td><a href="#condition">Condition</a> array</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="mockconfig"><code>MockConfig</code><a class="headerlink" href="#mockconfig" title="Permanent link">&para;</a></h3>
+<p>MockConfig represents configuration settings for mock notifications.</p>
+<p><strong>Used by:</strong> <a href="#notificationsource">NotificationSource</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>emitInterval</code></td>
+<td>integer</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="notificationsource"><code>NotificationSource</code><a class="headerlink" href="#notificationsource" title="Permanent link">&para;</a></h3>
+<p>NotificationSource represents a notification system configuration.</p>
+<p><strong>Used by:</strong> <a href="#configspec">ConfigSpec</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type</code></td>
+<td>enum[<code>AwsSqs</code>, <code>AzureEventGrid</code>, <code>GooglePubSub</code>, <code>HashicorpVault</code>, <code>Webhook</code>, <code>TCPSocket</code>, <code>KubernetesSecret</code>]</td>
+<td>Type of the notification source.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>awsSqs</code></td>
+<td><a href="#awssqsconfig">AWSSQSConfig</a></td>
+<td>AwsSqs configuration (required if <code>type</code> is <code>AwsSqs</code>).</td>
+<td></td>
+</tr>
+<tr>
+<td><code>azureEventGrid</code></td>
+<td><a href="#azureeventgridconfig">AzureEventGridConfig</a></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>googlePubSub</code></td>
+<td><a href="#googlepubsubconfig">GooglePubSubConfig</a></td>
+<td>GooglePubSub configuration (required if <code>type</code> is <code>GooglePubSub</code>).</td>
+<td></td>
+</tr>
+<tr>
+<td><code>webhook</code></td>
+<td><a href="#webhookconfig">WebhookConfig</a></td>
+<td>Webhook configuration (required if <code>type</code> is <code>Webhook</code>).</td>
+<td></td>
+</tr>
+<tr>
+<td><code>hashicorpVault</code></td>
+<td><a href="#hashicorpvaultconfig">HashicorpVaultConfig</a></td>
+<td>HashicorpVault configuration (required if <code>type</code> is <code>HashicorpVault</code>).</td>
+<td></td>
+</tr>
+<tr>
+<td><code>kubernetesSecret</code></td>
+<td><a href="#kubernetessecretconfig">KubernetesSecretConfig</a></td>
+<td>Kubernetes Secret configuration (required if <code>type</code> is <code>KubernetesSecret</code>).</td>
+<td></td>
+</tr>
+<tr>
+<td><code>tcpSocket</code></td>
+<td><a href="#tcpsocketconfig">TCPSocketConfig</a></td>
+<td>TCPSocket configuration (required if <code>type</code> is <code>TCPSocket</code>).</td>
+<td></td>
+</tr>
+<tr>
+<td><code>mock</code></td>
+<td><a href="#mockconfig">MockConfig</a></td>
+<td>Mock configuration (optional; useful for testing).</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="patchoperationconfig"><code>PatchOperationConfig</code><a class="headerlink" href="#patchoperationconfig" title="Permanent link">&para;</a></h3>
+<p><strong>Used by:</strong> <a href="#updatestrategy">UpdateStrategy</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td>string</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>template</code></td>
+<td>string</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="retrypolicy"><code>RetryPolicy</code><a class="headerlink" href="#retrypolicy" title="Permanent link">&para;</a></h3>
+<p><strong>Used by:</strong> <a href="#webhookconfig">WebhookConfig</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>maxRetries</code></td>
+<td>integer</td>
+<td>MaxRetries is the maximum number of times to retry. Values over 10 are capped at 10.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>algorithm</code></td>
+<td>string</td>
+<td>Defines how retry timing evolves. Supports <code>"linear"</code> and <code>"exponential"</code> (default if value is invalid/null).</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="secretkeyselector"><code>SecretKeySelector</code><a class="headerlink" href="#secretkeyselector" title="Permanent link">&para;</a></h3>
+<p>SecretKeySelector references a specific key within a Kubernetes secret.</p>
+<p><strong>Used by:</strong> <a href="#awssdksecretref">AWSSDKSecretRef</a>, <a href="#basicauth">BasicAuth</a>, <a href="#bearertoken">BearerToken</a>, <a href="#gcpsmauthsecretref">GCPSMAuthSecretRef</a>, <a href="#kubeconfigref">KubeConfigRef</a>, <a href="#tokenref">TokenRef</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td>string</td>
+<td>Name of the referenced Kubernetes secret.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>key</code></td>
+<td>string</td>
+<td>Key within the referenced Kubernetes secret.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>namespace</code></td>
+<td>string</td>
+<td>Namespace where the secret resides.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="serviceaccountselector"><code>ServiceAccountSelector</code><a class="headerlink" href="#serviceaccountselector" title="Permanent link">&para;</a></h3>
+<p><strong>Used by:</strong> <a href="#awssdkauth">AWSSDKAuth</a>, <a href="#gcpworkloadidentity">GCPWorkloadIdentity</a>, <a href="#kubernetesauth">KubernetesAuth</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td>string</td>
+<td>Name of the service account to select.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>namespace</code></td>
+<td>string</td>
+<td>Namespace of the service account.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>audiences</code></td>
+<td>string array</td>
+<td>Audiences for the service account token. Additional values added based on identity provider used.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="tcpsocketconfig"><code>TCPSocketConfig</code><a class="headerlink" href="#tcpsocketconfig" title="Permanent link">&para;</a></h3>
+<p>TCPSocketConfig contains configuration for TCP Socket notifications.</p>
+<p><strong>Used by:</strong> <a href="#notificationsource">NotificationSource</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>host</code></td>
+<td>string</td>
+<td>Host is the hostname or IP address to listen on.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>port</code></td>
+<td>integer</td>
+<td>Port is the port number to listen on.</td>
+<td><code>default: 8000</code></td>
+</tr>
+<tr>
+<td><code>identifierPathOnPayload</code></td>
+<td>string</td>
+<td>Key in the payload used to identify the secret. Defaults to <code>0.data.ObjectName</code> if not specified.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="tokenref"><code>TokenRef</code><a class="headerlink" href="#tokenref" title="Permanent link">&para;</a></h3>
+<p><strong>Used by:</strong> <a href="#kubernetesauth">KubernetesAuth</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>secretRef</code></td>
+<td><a href="#secretkeyselector">SecretKeySelector</a></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="updatestrategy"><code>UpdateStrategy</code><a class="headerlink" href="#updatestrategy" title="Permanent link">&para;</a></h3>
+<p><strong>Used by:</strong> <a href="#destinationtowatch">DestinationToWatch</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>operation</code></td>
+<td><a href="#updatestrategyoperation">UpdateStrategyOperation</a></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>patchOperationConfig</code></td>
+<td><a href="#patchoperationconfig">PatchOperationConfig</a></td>
+<td>Required if <code>operation == Patch</code>.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="updatestrategyoperation-string"><code>UpdateStrategyOperation</code> <em>(string)</em><a class="headerlink" href="#updatestrategyoperation-string" title="Permanent link">&para;</a></h3>
+<p><strong>Used by:</strong> <a href="#updatestrategy">UpdateStrategy</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PatchStatus</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Patch</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Delete</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="waitforcondition"><code>WaitForCondition</code><a class="headerlink" href="#waitforcondition" title="Permanent link">&para;</a></h3>
+<p><strong>Used by:</strong> <a href="#waitstrategy">WaitStrategy</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>retryTimeout</code></td>
+<td><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#duration-v1-meta">Duration</a></td>
+<td>Period to wait before each retry.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>maxRetries</code></td>
+<td>integer</td>
+<td>Maximum number of retries for the condition.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td>string</td>
+<td>The name of the condition to wait for.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td>string</td>
+<td>Optional message to match.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>reason</code></td>
+<td>string</td>
+<td>Optional reason to match.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>transitionedAfter</code></td>
+<td><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#duration-v1-meta">Duration</a></td>
+<td>Minimum time since last transition to accept the condition.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>updatedAfter</code></td>
+<td><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#duration-v1-meta">Duration</a></td>
+<td>Minimum time since last update to accept the condition.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="waitstrategy"><code>WaitStrategy</code><a class="headerlink" href="#waitstrategy" title="Permanent link">&para;</a></h3>
+<p><strong>Used by:</strong> <a href="#destinationtowatch">DestinationToWatch</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>time</code></td>
+<td><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#duration-v1-meta">Duration</a></td>
+<td>Wait time between reconciliations.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>condition</code></td>
+<td><a href="#waitforcondition">WaitForCondition</a></td>
+<td>Condition that must be satisfied before continuing.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="webhookauth"><code>WebhookAuth</code><a class="headerlink" href="#webhookauth" title="Permanent link">&para;</a></h3>
+<p>WebhookAuth contains authentication methods for webhooks.</p>
+<p><strong>Used by:</strong> <a href="#webhookconfig">WebhookConfig</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>basicAuth</code></td>
+<td><a href="#basicauth">BasicAuth</a></td>
+<td>Basic authentication credentials.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>bearerToken</code></td>
+<td><a href="#bearertoken">BearerToken</a></td>
+<td>Kubernetes secret containing the bearer token.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="webhookconfig"><code>WebhookConfig</code><a class="headerlink" href="#webhookconfig" title="Permanent link">&para;</a></h3>
+<p>WebhookConfig contains configuration for Webhook notifications.</p>
+<p><strong>Used by:</strong> <a href="#notificationsource">NotificationSource</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td>string</td>
+<td>Endpoint path (default: <code>/webhook</code>). Always expects a POST request.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>address</code></td>
+<td>string</td>
+<td>Address where the webhook is served. Defaults to <code>:8090</code>.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>identifierPathOnPayload</code></td>
+<td>string</td>
+<td>Key in the payload used to identify the secret. Defaults to <code>0.data.ObjectName</code> if not set.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>webhookAuth</code></td>
+<td><a href="#webhookauth">WebhookAuth</a></td>
+<td>Authentication method for the webhook.</td>
+<td></td>
+</tr>
+<tr>
+<td><code>retryPolicy</code></td>
+<td><a href="#retrypolicy">RetryPolicy</a></td>
+<td>Policy to retry failed messages. If not set, 4xx will be returned and no retry will be attempted.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand", "navigation.top", "content.code.copy", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
