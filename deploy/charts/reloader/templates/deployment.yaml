@@ -51,6 +51,9 @@ spec:
           args:
             - --health-probe-bind-address=:8081
             - --metrics-bind-address=:{{ .Values.metrics.listen.port }}
+          {{- if .Values.service.webhook.enabled }}
+            - --webhook-bind-address=:{{ .Values.service.webhook.listenPort }}
+          {{- end }}
           {{- if .Values.leaderElect }}
             - --leader-elect
           {{- end }}
@@ -66,15 +69,17 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           ports:
-            - name: http
-              containerPort: {{ .Values.service.port }}
-              protocol: TCP
             - name: healthz
               containerPort: 8081
               protocol: TCP
             - name: metrics
               containerPort: {{ .Values.metrics.listen.port }}
               protocol: TCP
+            {{- if .Values.service.webhook.enabled }}
+            - name: webhook
+              containerPort: {{ .Values.service.webhook.listenPort }}
+              protocol: TCP
+            {{- end }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
