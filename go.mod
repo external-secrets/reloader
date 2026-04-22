@@ -9,7 +9,7 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.41.6
 	github.com/aws/aws-sdk-go-v2/config v1.32.16
 	github.com/aws/aws-sdk-go-v2/credentials v1.19.15
-	github.com/aws/aws-sdk-go-v2/service/sqs v1.42.13
+	github.com/aws/aws-sdk-go-v2/service/sqs v1.42.26
 	github.com/aws/aws-sdk-go-v2/service/sts v1.42.0
 	github.com/external-secrets/external-secrets/apis v0.0.0-20260220115333-4ec4aeb22431
 	github.com/go-logr/logr v1.4.3
