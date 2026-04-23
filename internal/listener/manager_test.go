@@ -80,3 +80,32 @@ func TestGenerateListenerKey_KubernetesConfigMap_UnsupportedType(t *testing.T) {
 		t.Fatal("expected error for unsupported type")
 	}
 }
+
+func TestGenerateListenerKey_Webhook(t *testing.T) {
+	s1 := esov1alpha1.NotificationSource{
+		Type: schema.WEBHOOK,
+		Webhook: &esov1alpha1.WebhookConfig{
+			SecretIdentifierOnPayload: "custom.path",
+		},
+	}
+	s2 := esov1alpha1.NotificationSource{
+		Type: schema.WEBHOOK,
+		Webhook: &esov1alpha1.WebhookConfig{
+			SecretIdentifierOnPayload: "other.path",
+		},
+	}
+	key1, err := generateListenerKey(s1)
+	if err != nil {
+		t.Fatalf("generateListenerKey: %v", err)
+	}
+	key2, err := generateListenerKey(s2)
+	if err != nil {
+		t.Fatalf("generateListenerKey s2: %v", err)
+	}
+	if key1 != schema.WEBHOOK || key2 != schema.WEBHOOK {
+		t.Errorf("expected key %q, got %q and %q", schema.WEBHOOK, key1, key2)
+	}
+	if key1 != key2 {
+		t.Errorf("webhook key should be stable for a shared route: %q vs %q", key1, key2)
+	}
+}
