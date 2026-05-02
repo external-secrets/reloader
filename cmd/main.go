@@ -31,13 +31,14 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	"sigs.k8s.io/controller-runtime/pkg/metrics/filters"
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
-	"sigs.k8s.io/controller-runtime/pkg/webhook"
+	crtwebhook "sigs.k8s.io/controller-runtime/pkg/webhook"
 
 	externalsecrets "github.com/external-secrets/external-secrets/apis/externalsecrets/v1"
 	pushsecrets "github.com/external-secrets/external-secrets/apis/externalsecrets/v1alpha1"
 
 	"github.com/external-secrets/reloader/api/v1alpha1"
 	"github.com/external-secrets/reloader/internal/controller"
+	"github.com/external-secrets/reloader/internal/listener/webhook"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -99,9 +100,11 @@ func main() {
 		tlsOpts = append(tlsOpts, disableHTTP2)
 	}
 
-	webhookServer := webhook.NewServer(webhook.Options{
+	crdWebhookServer := crtwebhook.NewServer(crtwebhook.Options{
 		TLSOpts: tlsOpts,
 	})
+
+	notificationWebhook := webhook.NewWebhookServer(webhookAddr, ctrl.Log.WithName("notification"))
 
 	metricsServerOptions := metricsserver.Options{
 		BindAddress:   metricsAddr,
@@ -118,7 +121,7 @@ func main() {
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
 		Scheme:                 scheme,
 		Metrics:                metricsServerOptions,
-		WebhookServer:          webhookServer,
+		WebhookServer:          crdWebhookServer,
 		HealthProbeBindAddress: probeAddr,
 		LeaderElection:         enableLeaderElection,
 		LeaderElectionID:       "0cd7d2f7.externalsecrets.com",
@@ -128,9 +131,15 @@ func main() {
 		os.Exit(1)
 	}
 
+	if err := mgr.Add(notificationWebhook); err != nil {
+		setupLog.Error(err, "unable to add notification webhook server")
+		os.Exit(1)
+	}
+
 	if err = (controller.NewReloaderReconciler(
 		mgr.GetClient(),
 		mgr.GetScheme(),
+		notificationWebhook,
 	)).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Reloader")
 		os.Exit(1)

@@ -1,21 +1,30 @@
 # Webhook Source
 
-This guide explains how to set up the Webhook notification source for the Reloader component in your environment. Using Webhooks as a notification source allows you to trigger secret rotation events via HTTP calls to your Webhook endpoint.
+This guide explains how to set up the Webhook notification source for the Reloader component in your environment. Using webhooks as a notification source lets you trigger secret rotation events by sending HTTP POST requests to the Reloader process.
+
+## How it works
+
+The controller runs a **single shared HTTP server** for all `Config` resources. The listen address is set with the controller flag **`--webhook-bind-address`** (default `:8082`). Each cluster-scoped `Config` is exposed at:
+
+`POST /webhook/<Config.metadata.name>`
+
+There is no per-CR URL path or bind address; callers use the `Config` name in the path.
 
 ## Configuration
 
-To configure a Webhook as a notification source, the Reloader needs to be provided with the URL path to listen on, as well as the identifier in the payload that refers to the secret being rotated.
+Configure a `NotificationSource` with `type: Webhook` and a `webhook` block. The main field is **`identifierPathOnPayload`** (JSON path in the body where the secret name appears).
 
-### Key Fields
+### Key fields
 
-* **path**: Specifies the Webhook path that the Reloader will listen to. This is the endpoint where Webhook notifications will be received.
-* **identifierPathOnPayload**: Defines the key in the payload that contains the secret identifier. The identifier must match the name of the secret being rotated. By default, the path is `0.data.ObjectName`.
+* **identifierPathOnPayload**: JSON path in the POST body for the secret identifier. It must match the name of the secret being rotated. If omitted, the default path is `0.data.ObjectName`.
+* **webhookAuth** (optional): Basic or bearer authentication for incoming requests.
+* **retryPolicy** (optional): Retry failed publishes to the internal event channel.
 
-### Payload Structure
+### Payload structure
 
-The Webhook notification must contain a payload with a secret identifier. The Reloader will extract this identifier based on the path defined in the configuration.
+The POST body must be JSON containing the secret identifier at the configured path.
 
-#### Example Payload
+#### Example payload
 
 ```json
 {
@@ -27,14 +36,14 @@ The Webhook notification must contain a payload with a secret identifier. The Re
 }
 ```
 
-In this example, the Webhook payload contains a secret identifier at `0.data.ObjectName`, which corresponds to the secret named `my-secret`. The Reloader will use this identifier to rotate the appropriate secret.
+Here the identifier is at `0.data.ObjectName`, matching the secret name `my-secret`.
 
 ### Triggering a webhook notification
 
-To trigger a secret rotation, send an HTTP POST request to the Webhook endpoint you've configured.
+Send an HTTP POST to the Reloader webhook base URL with path `/webhook/<your-config-name>`.
 
 ```bash
-curl -X POST https://your-rotator-endpoint/webhook \
+curl -X POST "http://<reloader-host>:<webhook-port>/webhook/my-reloader-config" \
   -H "Content-Type: application/json" \
   -d '{
     "0": {
@@ -45,6 +54,12 @@ curl -X POST https://your-rotator-endpoint/webhook \
   }'
 ```
 
-Once this request is received by the Reloader, it will extract the secret identifier and proceed with the rotation process for the specified secret.
+Replace `my-reloader-config` with the `metadata.name` of your `Config` CR.
 
-Any service that can call an endpoint can trigger the rotation as long as you configure the keys accordingly.
+### Helm
+
+If you use the chart under `deploy/charts/reloader`, set **`service.webhook.enabled: true`**. The chart then adds **`--webhook-bind-address`** and a **`webhook`** container port using **`service.webhook.listenPort`** (default `8090`, aligned with the optional `*-webhook` Service). You can still override the flag with **`extraArgs`** if needed.
+
+There is no default “main” HTTP `Service` on port 8080. **`ingress.enabled`** requires **`service.webhook.enabled`**: the Ingress targets the **`{{ release }}-webhook`** Service on **`service.webhook.port`** (paths such as **`/webhook/...`**).
+
+Any client that can reach the Service or host on that port can trigger rotation as long as the JSON path and optional auth match your `Config`.

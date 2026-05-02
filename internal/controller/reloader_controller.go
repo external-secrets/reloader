@@ -11,6 +11,7 @@ import (
 	"github.com/external-secrets/reloader/internal/events"
 	"github.com/external-secrets/reloader/internal/handler"
 	"github.com/external-secrets/reloader/internal/listener"
+	"github.com/external-secrets/reloader/internal/listener/webhook"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
@@ -38,6 +39,7 @@ type ReloaderReconciler struct {
 
 	// Internal fields
 	listenerManager *listener.Manager
+	webhookServer   *webhook.WebhookServer
 
 	// eventChan is a channel that transports SecretRotationEvent instances between various parts of the system, such as event handlers and listeners.
 	eventChan    chan events.SecretRotationEvent
@@ -45,19 +47,20 @@ type ReloaderReconciler struct {
 }
 
 // NewReloaderReconciler creates a new ReloaderReconciler with the default factory.
-func NewReloaderReconciler(client client.Client, scheme *runtime.Scheme) *ReloaderReconciler {
+func NewReloaderReconciler(client client.Client, scheme *runtime.Scheme, hook *webhook.WebhookServer) *ReloaderReconciler {
 	return &ReloaderReconciler{
-		Client:       client,
-		Scheme:       scheme,
-		eventChan:    make(chan events.SecretRotationEvent),
-		eventHandler: handler.NewEventHandler(client),
+		Client:        client,
+		Scheme:        scheme,
+		webhookServer: hook,
+		eventChan:     make(chan events.SecretRotationEvent),
+		eventHandler:  handler.NewEventHandler(client),
 	}
 }
 
 // SetupWithManager sets up the controller with the Manager.
 func (r *ReloaderReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	ctx, cancel := context.WithCancel(context.Background())
-	r.listenerManager = listener.NewListenerManager(ctx, r.eventChan, r.Client, log.FromContext(ctx))
+	r.listenerManager = listener.NewListenerManager(ctx, r.eventChan, r.Client, log.FromContext(ctx), r.webhookServer)
 
 	// Start a goroutine to process events
 	go r.processEvents(ctx)
@@ -107,17 +110,18 @@ func (r *ReloaderReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 
 	if err := r.Get(ctx, req.NamespacedName, &cfg); err != nil {
 		if apierrors.IsNotFound(err) {
-			if err := r.listenerManager.StopAll(); err != nil {
+			// Object is gone (e.g. after finalizer). Only tear down listeners for this Config — not all Configs.
+			manifestName := types.NamespacedName{
+				Namespace: req.Namespace,
+				Name:      req.Name,
+			}
+			if err := r.listenerManager.ManageListeners(manifestName, nil); err != nil {
 				return ctrl.Result{}, err
 			}
 			return ctrl.Result{}, nil
 		}
-
-		// Error reading the object - requeue the request.
-		if !apierrors.IsNotFound(err) {
-			logger.Error(err, "unable to fetch Reloader deployment")
-			return ctrl.Result{}, err
-		}
+		logger.Error(err, "unable to fetch Config")
+		return ctrl.Result{}, err
 	}
 	if cfg.DeletionTimestamp != nil && controllerutil.ContainsFinalizer(&cfg, reloaderFinalizer) {
 		// Handle any cleanup logic here, as this is a DELETE request

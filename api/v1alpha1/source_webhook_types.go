@@ -2,16 +2,6 @@ package v1alpha1
 
 // WebhookConfig contains configuration for Webhook notifications.
 type WebhookConfig struct {
-	// Path that the webhook will receive the notifications.
-	// If not present `/webhook` will be used. The path always expects a POST and this is not configurable
-	// +optional
-	Path string `json:"path"`
-
-	// Address is the address where the webhook will be served in your infrastructure.
-	// If not present, defaults to `:8090`
-	// +optional
-	Address string `json:"address"`
-
 	// SecretIdentifierOnPayload is the key that the reloader will look for in the payload.
 	// The value of this key should be the same name as in the external secret. It will default to `0.data.ObjectName` if not set
 	// +optional

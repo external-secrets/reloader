@@ -410,8 +410,8 @@ WebhookConfig contains configuration for Webhook notifications.
 
 | Field                    | Type                          | Description                                                                                           | Validation |
 |--------------------------|-------------------------------|-------------------------------------------------------------------------------------------------------|------------|
-| `path`                   | string                        | Endpoint path (default: `/webhook`). Always expects a POST request.                                   |            |
-| `address`                | string                        | Address where the webhook is served. Defaults to `:8090`.                                             |            |
 | `identifierPathOnPayload`| string                        | Key in the payload used to identify the secret. Defaults to `0.data.ObjectName` if not set.           |            |
 | `webhookAuth`            | [WebhookAuth](#webhookauth)   | Authentication method for the webhook.                                                                |            |
 | `retryPolicy`            | [RetryPolicy](#retrypolicy)   | Policy to retry failed messages. If not set, 4xx will be returned and no retry will be attempted.     |            |
+
+The controller serves all webhook `Config` resources on one HTTP listener (`--webhook-bind-address`). Each `Config` is reachable at `POST /webhook/<Config.metadata.name>`.
