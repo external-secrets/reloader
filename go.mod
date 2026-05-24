@@ -20,7 +20,7 @@ require (
 	github.com/tidwall/gjson v1.19.0
 	golang.org/x/oauth2 v0.36.0
 	google.golang.org/api v0.279.0
-	google.golang.org/grpc v1.80.0
+	google.golang.org/grpc v1.81.1
 	grpc.go4.org v0.0.0-20170609214715-11d0a25b4919
 	k8s.io/api v0.36.1
 	k8s.io/apimachinery v0.36.1
