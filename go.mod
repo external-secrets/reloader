@@ -14,7 +14,7 @@ require (
 	github.com/external-secrets/external-secrets/apis v0.0.0-20260220115333-4ec4aeb22431
 	github.com/go-logr/logr v1.4.3
 	github.com/googleapis/gax-go/v2 v2.22.0
-	github.com/onsi/ginkgo/v2 v2.28.1
+	github.com/onsi/ginkgo/v2 v2.29.0
 	github.com/onsi/gomega v1.40.0
 	github.com/stretchr/testify v1.11.1
 	github.com/tidwall/gjson v1.19.0
@@ -77,7 +77,7 @@ require (
 	github.com/google/cel-go v0.26.1 // indirect
 	github.com/google/gnostic-models v0.7.1 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
-	github.com/google/pprof v0.0.0-20260115054156-294ebfa9ad83 // indirect
+	github.com/google/pprof v0.0.0-20260402051712-545e8a4df936 // indirect
 	github.com/google/s2a-go v0.1.9 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.15 // indirect
