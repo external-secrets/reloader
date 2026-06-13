@@ -1,13 +1,20 @@
 name: Helm
 
 on:
+  release:
+    types: [published]
   push:
     branches:
       - main
     tags:
       - "v*"
   pull_request:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Chart version to release (overrides Chart.yaml). Leave empty to use Chart.yaml."
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -77,7 +84,7 @@ jobs:
 
   release:
     needs: lint-and-test
-    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch' || github.event_name == 'release'
     permissions:
       contents: read
       packages: write
@@ -114,8 +121,14 @@ jobs:
 
       - name: Package chart
         id: package_chart
+        env:
+          VERSION_INPUT: ${{ inputs.version }}
         run: |
-          helm package deploy/charts/reloader --destination .helm-packages
+          version_arg=()
+          if [[ -n "${VERSION_INPUT}" ]]; then
+            version_arg=(--version "${VERSION_INPUT}")
+          fi
+          helm package deploy/charts/reloader --destination .helm-packages "${version_arg[@]}"
           echo "pkg=$(echo .helm-packages/*.tgz)" >> "$GITHUB_OUTPUT"
 
       - name: Push chart to GHCR
