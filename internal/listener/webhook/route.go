@@ -74,7 +74,7 @@ func (r *route) shutdown() {
 }
 
 func (r *route) handle(w http.ResponseWriter, req *http.Request) {
-	defer req.Body.Close()
+	defer req.Body.Close() //nolint
 
 	if err := r.authenticate(req.Header); err != nil {
 		r.logger.Error(err, "Couldn't authenticate request")
