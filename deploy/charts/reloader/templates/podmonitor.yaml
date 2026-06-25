@@ -21,5 +21,10 @@ spec:
       interval: {{ .Values.podMonitor.interval }}
       scrapeTimeout: {{ .Values.podMonitor.scrapeTimeout }}
       honorLabels: {{ .Values.podMonitor.honorLabels }}
+      {{- if .Values.metrics.secure }}
+      scheme: https
+      tlsConfig:
+        insecureSkipVerify: true
+      {{- end }}
 {{- end }}
 {{- end }}

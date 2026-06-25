@@ -1,20 +1,3 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ include "reloader.fullname" . }}
-  namespace: {{ include "reloader.namespace" . }}
-  labels:
-    {{- include "reloader.labels" . | nindent 4 }}
-spec:
-  type: {{ .Values.service.type }}
-  ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
-  selector:
-    {{- include "reloader.selectorLabels" . | nindent 4 }}
----
 {{- if .Values.service.webhook.enabled }}
 apiVersion: v1
 kind: Service
@@ -33,8 +16,8 @@ spec:
   selector:
     {{- include "reloader.selectorLabels" . | nindent 4 }}
 {{- end }}
----
 {{- if .Values.service.socket.enabled }}
+---
 apiVersion: v1
 kind: Service
 metadata:

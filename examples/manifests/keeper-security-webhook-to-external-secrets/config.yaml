@@ -1,0 +1,14 @@
+apiVersion: reloader.external-secrets.io/v1alpha1
+kind: Config
+metadata:
+  name: keeper # will listen on the webhook at /webhook/keeper
+spec:
+  notificationSources:
+    - type: Webhook
+      webhook:
+        identifierPathOnPayload: "record_uid"
+  destinationsToWatch:
+  - type: ExternalSecret
+    externalSecret:
+      labelSelectors:
+        matchLabels: {}
