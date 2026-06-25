@@ -73,12 +73,7 @@ func (lm *Manager) ManageListeners(manifestName types.NamespacedName, sources []
 	// Add new listeners
 	for key, source := range desiredListeners {
 		if _, exists := lm.listeners[manifestName][key]; exists {
-			if source.Type == schema.WEBHOOK && lm.webhookServer != nil && source.Webhook != nil {
-				lm.webhookServer.Register(manifestName.Name, lm.context, source.Webhook, lm.client, lm.eventChan, lm.logger)
-				lm.logger.V(1).Info("updated webhook registration", "manifest", manifestName, "key", key)
-			} else {
-				lm.logger.V(1).Info("listener already exists", "key", key)
-			}
+			lm.logger.V(1).Info("listener already exists", "key", key)
 			continue
 		}
 		lm.logger.Info("Creating new eventListener", "key", key, "type", source.Type)
@@ -87,15 +82,23 @@ func (lm *Manager) ManageListeners(manifestName types.NamespacedName, sources []
 				lm.logger.Error(nil, "webhook server is not configured; cannot start Webhook listener")
 				continue
 			}
-			if source.Webhook == nil {
-				lm.logger.Error(nil, "webhook config is nil")
-				continue
+			webhookCfg := source.Webhook
+			if webhookCfg == nil {
+				if source.KubernetesSecret != nil {
+					lm.logger.Error(nil, "notification source type is Webhook but kubernetesSecret is set; use type KubernetesSecret or provide a webhook block")
+					continue
+				}
+				if source.KubernetesConfigMap != nil {
+					lm.logger.Error(nil, "notification source type is Webhook but kubernetesConfigMap is set; use type KubernetesConfigMap or provide a webhook block")
+					continue
+				}
+				webhookCfg = &esov1alpha1.WebhookConfig{}
 			}
 			eventListener := webhook.NewWebhookListener(
 				lm.webhookServer,
 				manifestName.Name,
 				lm.context,
-				source.Webhook,
+				webhookCfg,
 				lm.client,
 				lm.eventChan,
 				lm.logger,
@@ -156,10 +159,6 @@ func (lm *Manager) StopAll() error {
 
 // generateListenerKey creates a unique key for a NotificationSource based on its Type and configuration.
 func generateListenerKey(source esov1alpha1.NotificationSource) (string, error) {
-	if source.Type == schema.WEBHOOK {
-		return schema.WEBHOOK, nil
-	}
-
 	// Marshal the specific configuration based on the Type
 	var config any
 	switch source.Type {
@@ -179,6 +178,8 @@ func generateListenerKey(source esov1alpha1.NotificationSource) (string, error) 
 		config = source.KubernetesSecret
 	case schema.KUBERNETES_CONFIG_MAP:
 		config = source.KubernetesConfigMap
+	case schema.WEBHOOK:
+		config = source.Webhook
 	default:
 		return "", fmt.Errorf("unsupported notification source type: %s", source.Type)
 	}

@@ -21,8 +21,11 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-const defaultIdentifierPath = "0.data.ObjectName"
-const defaultMaxRetries = 10
+const (
+	defaultIdentifierPath = "0.data.ObjectName"
+	defaultMaxRetries     = 10
+	maxWebhookBodyBytes   = 1 << 20 // 1 MiB
+)
 
 // route holds the per-Config handler state for a single webhook endpoint.
 type route struct {
@@ -68,11 +71,11 @@ func newRoute(parentCtx context.Context, configName string, cfg *v1alpha1.Webhoo
 func (r *route) shutdown() {
 	r.cancel()
 	r.retryWG.Wait()
-	close(r.retryQueue)
-	r.drainRetryQueue()
 }
 
 func (r *route) handle(w http.ResponseWriter, req *http.Request) {
+	defer req.Body.Close()
+
 	if err := r.authenticate(req.Header); err != nil {
 		r.logger.Error(err, "Couldn't authenticate request")
 		w.WriteHeader(http.StatusUnauthorized)
@@ -80,14 +83,18 @@ func (r *route) handle(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	payload, err := parsePayloadToString(req.Body)
+	payload, err := parsePayloadToString(w, req.Body, maxWebhookBodyBytes)
 	if err != nil {
 		r.logger.Error(err, "Couldn't parse event payload")
+		if _, ok := err.(*http.MaxBytesError); ok {
+			w.WriteHeader(http.StatusRequestEntityTooLarge)
+			_, _ = fmt.Fprintln(w, "Request body too large")
+			return
+		}
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = fmt.Fprintln(w, "Couldn't decode webhook payload. Send a valid json")
 		return
 	}
-	_ = req.Body.Close()
 
 	identifierPath := r.getIdentifierPath()
 
@@ -215,22 +222,6 @@ func (r *route) handleRetries() {
 	}
 }
 
-func (r *route) drainRetryQueue() {
-	r.logger.Info("Draining retry queue")
-	for message := range r.retryQueue {
-		err := r.processEvent(message.event)
-		if err == nil {
-			r.logger.Info(fmt.Sprintf(
-				"Message for '%s' successfully processed after %d retries",
-				message.event.SecretIdentifier,
-				message.currentRun,
-			))
-		} else {
-			r.logger.Info(fmt.Sprintf("Message for '%s' was not processed", message.event.SecretIdentifier))
-		}
-	}
-}
-
 func getNextRetryAt(algorithm string, currentRun int) time.Time {
 	if algorithm == "linear" {
 		return time.Now().Add(time.Second)
@@ -239,8 +230,9 @@ func getNextRetryAt(algorithm string, currentRun int) time.Time {
 	return time.Now().Add(time.Second * duration)
 }
 
-func parsePayloadToString(body io.ReadCloser) (string, error) {
-	b, err := io.ReadAll(body)
+func parsePayloadToString(w http.ResponseWriter, body io.ReadCloser, limit int64) (string, error) {
+	limited := http.MaxBytesReader(w, body, limit)
+	b, err := io.ReadAll(limited)
 	if err != nil {
 		return "", err
 	}

@@ -51,6 +51,7 @@ spec:
           args:
             - --health-probe-bind-address=:8081
             - --metrics-bind-address=:{{ .Values.metrics.listen.port }}
+            - --metrics-secure={{ .Values.metrics.secure }}
           {{- if .Values.service.webhook.enabled }}
             - --webhook-bind-address=:{{ .Values.service.webhook.listenPort }}
           {{- end }}

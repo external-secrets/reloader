@@ -79,8 +79,8 @@ func main() {
 	flag.StringVar(
 		&webhookAddr,
 		"webhook-bind-address",
-		":8082",
-		"The address the webhook listener binds to. Defaults to :8082",
+		":8090",
+		"The address the webhook listener binds to. Defaults to :8090",
 	)
 
 	opts := zap.Options{

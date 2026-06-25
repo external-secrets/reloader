@@ -30,6 +30,8 @@ const (
 	EventActionDeleted  EventAction = "Deleted"
 	ProcessedAnnotation string      = "reloader/processed"
 	reloaderFinalizer               = "reloader.external-secrets.io/finalizer"
+	// eventChannelBufferSize buffers events from multiple concurrent webhook routes.
+	eventChannelBufferSize = 256
 )
 
 // ReloaderReconciler reconciles an Reloader object
@@ -52,7 +54,7 @@ func NewReloaderReconciler(client client.Client, scheme *runtime.Scheme, hook *w
 		Client:        client,
 		Scheme:        scheme,
 		webhookServer: hook,
-		eventChan:     make(chan events.SecretRotationEvent),
+		eventChan:     make(chan events.SecretRotationEvent, eventChannelBufferSize),
 		eventHandler:  handler.NewEventHandler(client),
 	}
 }

@@ -3,7 +3,9 @@ package webhook
 import (
 	"context"
 	"fmt"
+	"net"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
@@ -35,19 +37,61 @@ func NewWebhookServer(addr string, logger logr.Logger) *WebhookServer {
 	}
 	s.server = &http.Server{
 		Addr:    addr,
-		Handler: s.buildMux(),
+		Handler: s,
 	}
 	return s
+}
+
+// ServeHTTP dispatches incoming requests to the registered route under a read lock,
+// avoiding reassignment of server.Handler while ListenAndServe is running.
+func (s *WebhookServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodPost {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	configName, ok := configNameFromPath(req.URL.Path)
+	if !ok {
+		http.NotFound(w, req)
+		return
+	}
+
+	s.mu.RLock()
+	route, found := s.routes[configName]
+	s.mu.RUnlock()
+	if !found {
+		http.NotFound(w, req)
+		return
+	}
+
+	recoverMiddleware(route.handle, s.logger)(w, req)
+}
+
+func configNameFromPath(path string) (string, bool) {
+	if !strings.HasPrefix(path, webhookRoutePrefix) {
+		return "", false
+	}
+	configName := strings.TrimPrefix(path, webhookRoutePrefix)
+	if configName == "" || strings.Contains(configName, "/") {
+		return "", false
+	}
+	return configName, true
 }
 
 // Start implements manager.Runnable: listens until ctx is cancelled, then shuts down gracefully.
 func (s *WebhookServer) Start(ctx context.Context) error {
 	s.logger.Info("Starting shared webhook server", "addr", s.addr)
+
+	ln, err := net.Listen("tcp", s.addr)
+	if err != nil {
+		return err
+	}
+
 	errCh := make(chan error, 1)
 	go func() {
-		err := s.server.ListenAndServe()
-		errCh <- err
+		errCh <- s.server.Serve(ln)
 	}()
+
 	select {
 	case err := <-errCh:
 		if err != nil && err != http.ErrServerClosed {
@@ -57,7 +101,9 @@ func (s *WebhookServer) Start(ctx context.Context) error {
 	case <-ctx.Done():
 		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		_ = s.closeHTTPServer(shutdownCtx)
+		if err := s.closeHTTPServer(shutdownCtx); err != nil {
+			return err
+		}
 		err := <-errCh
 		if err != nil && err != http.ErrServerClosed {
 			return err
@@ -85,7 +131,6 @@ func (s *WebhookServer) Register(configName string, routeCtx context.Context, cf
 
 	r := newRoute(routeCtx, configName, cfg, k8sClient, eventChan, logger)
 	s.routes[configName] = r
-	s.server.Handler = s.buildMux()
 
 	s.logger.Info("Registered webhook route", "config", configName, "path", webhookRoutePrefix+configName)
 }
@@ -98,7 +143,6 @@ func (s *WebhookServer) Unregister(configName string) {
 	if r, ok := s.routes[configName]; ok {
 		r.shutdown()
 		delete(s.routes, configName)
-		s.server.Handler = s.buildMux()
 		s.logger.Info("Unregistered webhook route", "config", configName)
 	}
 }
@@ -109,17 +153,6 @@ func (s *WebhookServer) HasRoute(configName string) bool {
 	defer s.mu.RUnlock()
 	_, ok := s.routes[configName]
 	return ok
-}
-
-// buildMux rebuilds the mux from current routes. Caller must hold s.mu (write lock).
-func (s *WebhookServer) buildMux() *http.ServeMux {
-	mux := http.NewServeMux()
-	for name, r := range s.routes {
-		pattern := fmt.Sprintf("POST %s%s", webhookRoutePrefix, name)
-		h := r
-		mux.HandleFunc(pattern, recoverMiddleware(h.handle, s.logger))
-	}
-	return mux
 }
 
 func recoverMiddleware(next http.HandlerFunc, logger logr.Logger) http.HandlerFunc {

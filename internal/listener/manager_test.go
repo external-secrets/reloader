@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"strings"
 
 	esov1alpha1 "github.com/external-secrets/reloader/api/v1alpha1"
 	"github.com/external-secrets/reloader/internal/listener/schema"
@@ -102,10 +103,17 @@ func TestGenerateListenerKey_Webhook(t *testing.T) {
 	if err != nil {
 		t.Fatalf("generateListenerKey s2: %v", err)
 	}
-	if key1 != schema.WEBHOOK || key2 != schema.WEBHOOK {
-		t.Errorf("expected key %q, got %q and %q", schema.WEBHOOK, key1, key2)
+	if !strings.HasPrefix(key1, schema.WEBHOOK+"-") {
+		t.Errorf("expected key to start with %q-, got %q", schema.WEBHOOK, key1)
 	}
-	if key1 != key2 {
-		t.Errorf("webhook key should be stable for a shared route: %q vs %q", key1, key2)
+	if key1 == key2 {
+		t.Errorf("different webhook configs should produce different keys: %q", key1)
+	}
+	key1Again, err := generateListenerKey(s1)
+	if err != nil {
+		t.Fatalf("generateListenerKey (second call): %v", err)
+	}
+	if key1 != key1Again {
+		t.Errorf("same webhook config should produce same key: %q vs %q", key1, key1Again)
 	}
 }

@@ -2,6 +2,7 @@ package webhook
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"net/http"
 	"net/http/httptest"
@@ -58,6 +59,75 @@ func TestWebhookServer_ConcurrentRegister(t *testing.T) {
 	}
 	if !s.HasRoute("same") {
 		t.Fatal("expected one stable route")
+	}
+}
+
+func TestWebhookServer_ConcurrentRegisterWithRunningServer(t *testing.T) {
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	addr := ln.Addr().String()
+	_ = ln.Close()
+
+	s := NewWebhookServer(addr, logr.Discard())
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	go func() { _ = s.Start(ctx) }()
+	waitTCP(t, addr)
+
+	eventCh := make(chan events.SecretRotationEvent, 16)
+	cl := fake.NewClientBuilder().Build()
+
+	const n = 32
+	done := make(chan struct{})
+	for i := 0; i < n; i++ {
+		go func(i int) {
+			defer func() { done <- struct{}{} }()
+			name := fmt.Sprintf("cfg-%d", i%4)
+			s.Register(name, ctx, &v1alpha1.WebhookConfig{}, cl, eventCh, logr.Discard())
+		}(i)
+	}
+	for i := 0; i < n; i++ {
+		<-done
+	}
+
+	body := `{"0":{"data":{"ObjectName":"secret-one"}}}`
+	for _, name := range []string{"cfg-0", "cfg-1", "cfg-2", "cfg-3"} {
+		req, err := http.NewRequest(http.MethodPost, "http://"+addr+"/webhook/"+name, strings.NewReader(body))
+		if err != nil {
+			t.Fatal(err)
+		}
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		_ = resp.Body.Close()
+		if resp.StatusCode != http.StatusNoContent {
+			t.Fatalf("route %s: expected 204, got %d", name, resp.StatusCode)
+		}
+	}
+
+	cancel()
+}
+
+func TestConfigNameFromPath(t *testing.T) {
+	tests := []struct {
+		path string
+		want string
+		ok   bool
+	}{
+		{"/webhook/myconfig", "myconfig", true},
+		{"/webhook/", "", false},
+		{"/webhook/a/b", "", false},
+		{"/other/myconfig", "", false},
+	}
+	for _, tt := range tests {
+		got, ok := configNameFromPath(tt.path)
+		if ok != tt.ok || got != tt.want {
+			t.Errorf("configNameFromPath(%q) = (%q, %v), want (%q, %v)", tt.path, got, ok, tt.want, tt.ok)
+		}
 	}
 }
 

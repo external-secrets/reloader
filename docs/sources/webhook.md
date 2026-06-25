@@ -4,11 +4,15 @@ This guide explains how to set up the Webhook notification source for the Reload
 
 ## How it works
 
-The controller runs a **single shared HTTP server** for all `Config` resources. The listen address is set with the controller flag **`--webhook-bind-address`** (default `:8082`). Each cluster-scoped `Config` is exposed at:
+The controller runs a **single shared HTTP server** for all `Config` resources. The listen address is set with the controller flag **`--webhook-bind-address`** (default `:8090`). Each cluster-scoped `Config` is exposed at:
 
 `POST /webhook/<Config.metadata.name>`
 
 There is no per-CR URL path or bind address; callers use the `Config` name in the path.
+
+## Breaking changes (v2.0.0)
+
+Per-CR **`path`** and **`address`** fields were removed from `WebhookConfig`. Webhooks now use the shared listener configured via **`--webhook-bind-address`** and the fixed route pattern above. Upgrade callers to POST to `/webhook/<Config.metadata.name>` on the shared bind address instead of per-Config URLs.
 
 ## Configuration
 
@@ -58,7 +62,7 @@ Replace `my-reloader-config` with the `metadata.name` of your `Config` CR.
 
 ### Helm
 
-If you use the chart under `deploy/charts/reloader`, set **`service.webhook.enabled: true`**. The chart then adds **`--webhook-bind-address`** and a **`webhook`** container port using **`service.webhook.listenPort`** (default `8090`, aligned with the optional `*-webhook` Service). You can still override the flag with **`extraArgs`** if needed.
+If you use the chart under `deploy/charts/reloader`, set **`service.webhook.enabled: true`**. The chart then adds **`--webhook-bind-address`** and a **`webhook`** container port using **`service.webhook.listenPort`** (default `8090`, matching the controller default and the optional `*-webhook` Service). You can still override the flag with **`extraArgs`** if needed.
 
 There is no default “main” HTTP `Service` on port 8080. **`ingress.enabled`** requires **`service.webhook.enabled`**: the Ingress targets the **`{{ release }}-webhook`** Service on **`service.webhook.port`** (paths such as **`/webhook/...`**).
 
