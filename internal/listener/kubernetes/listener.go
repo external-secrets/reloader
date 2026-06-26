@@ -205,6 +205,10 @@ func (h *Handler[T]) fetchSecretKey(ctx context.Context, secretKeySelector *v1al
 }
 
 func (h *Handler[T]) serviceAccountToken(ctx context.Context, serviceAccountSelector *v1alpha1.ServiceAccountSelector) ([]byte, error) {
+	if h.CtrlClientSet == nil {
+		return nil, errors.New("controller client not initialized; creating account token is unavailable")
+	}
+
 	if serviceAccountSelector == nil {
 		return nil, errors.New("service account selector is nil")
 	}
