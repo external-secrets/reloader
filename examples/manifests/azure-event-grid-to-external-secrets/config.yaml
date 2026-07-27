@@ -1,0 +1,20 @@
+apiVersion: reloader.external-secrets.io/v1alpha1
+kind: Config
+metadata:
+  name: eventgrid-reloader
+spec:
+  destinationsToWatch:
+    - type:
+  notificationSources:
+    - type: AzureEventGrid
+    ## Azure Event Grid must be configured to send rotation events over this webhook
+      azureEventGrid:
+        host: "0.0.0.0"
+        port: 8000
+        subscriptions:
+          - ar-test-event-subscription ## Subscription must exist
+  destinationsToWatch:
+    - type: ExternalSecret
+      externalSecret:
+        names:
+        - ar-test-secret

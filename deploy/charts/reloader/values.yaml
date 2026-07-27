@@ -1,0 +1,136 @@
+replicaCount: 1
+revisionHistoryLimit: 10
+
+image:
+  repository: ghcr.io/external-secrets/reloader
+  pullPolicy: IfNotPresent
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+namespaceOverride: ""
+commonLabels: {}
+
+leaderElect: false
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  extraLabels: {}
+  name: ""
+
+rbac:
+  create: true
+
+extraArgs: {}
+extraEnv: []
+extraVolumes: []
+extraVolumeMounts: []
+
+deploymentAnnotations: {}
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext:
+  enabled: true
+
+securityContext:
+  enabled: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+service:
+  type: ClusterIP
+  port: 8080
+
+  webhook:
+    enabled: false
+    type: ClusterIP
+    port: 8090
+    targetPort: 8090
+
+  socket:
+    enabled: false
+    type: ClusterIP
+    port: 8000
+    targetPort: 8000
+
+metrics:
+  listen:
+    port: 8443
+  service:
+    enabled: false
+    port: 8443
+    annotations: {}
+
+serviceMonitor:
+  enabled: false
+  namespace: ""
+  additionalLabels: {}
+  interval: 30s
+  scrapeTimeout: 25s
+  honorLabels: false
+
+resources: {}
+
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: 8081
+  initialDelaySeconds: 15
+  periodSeconds: 20
+
+readinessProbe:
+  httpGet:
+    path: /readyz
+    port: 8081
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+nodeSelector: {}
+tolerations: []
+topologySpreadConstraints: []
+affinity: {}
+priorityClassName: ""
+hostNetwork: false
+
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+
+podMonitor:
+  enabled: false
+  additionalLabels: {}
+  path: /metrics
+  interval: 60s
+  scrapeTimeout: 30s
+  honorLabels: false
+
+certificate:
+  enabled: false
+  secretName: ""
+  issuer:
+    kind: ""
+    name: ""
+    namespace: ""
+  hosts: []
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []

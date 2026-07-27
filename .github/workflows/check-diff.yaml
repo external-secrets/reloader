@@ -1,0 +1,31 @@
+name: Check for diff after go mod tidy and generated targets
+
+on:
+  pull_request: {}
+  workflow_call:
+
+jobs:
+  diff-check-manifests:
+    name: Check for diff
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: '${{ github.workspace }}/go.mod'
+      - name: donwload modules
+        run: |
+          go mod download
+      - name: Make manifests and make generate
+        run: |
+          make manifests && make generate
+      - name: Check for diff
+        run: |
+          gitStatus="$(git status --porcelain)"
+          if [[ -z "${gitStatus}" ]]; then
+              exit 0
+          fi
+          echo "${gitStatus}"
+          exit 1

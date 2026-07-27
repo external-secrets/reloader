@@ -1,0 +1,27 @@
+apiVersion: reloader.external-secrets.io/v1alpha1
+kind: Config
+metadata:
+  name: aws-sqs-to-external-secrets
+spec:
+  notificationSources:
+    - type: AwsSqs
+      awsSqs:
+        ## SQS Must exist receiving 'PutSecretValue' events from Secret Manager
+        queueURL: https://sqs.eu-west-1.amazonaws.com/682033461729/secret-events-queue
+        region: eu-west-1
+        auth:
+          authMethod: static
+          secretRef:
+            accessKeyIdSecretRef:
+              name: aws-credentials
+              key: AWS_ACCESS_KEY_ID
+              namespace: default
+            secretAccessKeySecretRef:
+              name: aws-credentials
+              key: AWS_SECRET_ACCESS_KEY
+              namespace: default
+  destinationsToWatch:
+    - type: ExternalSecrets
+      externalSecrets:
+        - names:
+            - aws-secret

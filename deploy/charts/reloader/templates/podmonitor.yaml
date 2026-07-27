@@ -1,0 +1,25 @@
+{{- if .Values.podMonitor.enabled }}
+{{- if .Capabilities.APIVersions.Has "monitoring.coreos.com/v1" }}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ include "reloader.fullname" . }}
+  namespace: {{ include "reloader.namespace" . }}
+  labels:
+    {{- include "reloader.labels" . | nindent 4 }}
+    {{- with .Values.podMonitor.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  jobLabel: {{ include "reloader.fullname" . }}
+  selector:
+    matchLabels:
+      {{- include "reloader.selectorLabels" . | nindent 6 }}
+  podMetricsEndpoints:
+    - port: metrics
+      path: {{ .Values.podMonitor.path }}
+      interval: {{ .Values.podMonitor.interval }}
+      scrapeTimeout: {{ .Values.podMonitor.scrapeTimeout }}
+      honorLabels: {{ .Values.podMonitor.honorLabels }}
+{{- end }}
+{{- end }}

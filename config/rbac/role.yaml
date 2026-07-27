@@ -1,0 +1,72 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: manager-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - secrets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - create
+  - get
+  - patch
+  - update
+- apiGroups:
+  - external-secrets.io
+  resources:
+  - externalsecrets
+  - pushsecrets
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - reloader.external-secrets.io
+  resources:
+  - configs
+  - configs/status
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - reloader.external-secrets.io
+  resources:
+  - configs/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - workflows.external-secrets.io
+  resources:
+  - workflowruntemplates
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - watch

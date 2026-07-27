@@ -1,0 +1,23 @@
+apiVersion: reloader.external-secrets.io/v1alpha1
+kind: Config
+metadata:
+  name: reloader-sample
+  labels:
+    app.kubernetes.io/name: reloader
+spec:
+  notificationSources:
+    - type: KubernetesSecret
+      kubernetesSecret:
+        ## Watch secrets internal to the cluster
+        serverURL: https://kubernetes.default.svc
+  destinationsToWatch:
+  ## Trigger rollout to any deployments using them
+  - type: Deployment
+    deployment:
+      labelSelectors:
+        matchLabels: {}
+  ## Trigger rollout to any external-secrets using them
+  - type: ExternalSecret
+    externalSecret:
+      labelSelectors:
+        matchLabels: {}
