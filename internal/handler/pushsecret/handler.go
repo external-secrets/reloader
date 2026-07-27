@@ -142,11 +142,11 @@ func (h *Handler) _references(obj client.Object, secretIdentifier string) (bool,
 		return false, errors.New("obj isn't type PushSecret")
 	}
 	// Check selector
-	if ps.Spec.Selector.Secret != nil && ps.Spec.Selector.Secret.Name == secretIdentifier {
+	if ps.Spec.Selector.Secret != nil && util.SecretIdentifierMatches(ps.Spec.Selector.Secret.Name, secretIdentifier) {
 		return true, nil
 	}
 	for _, data := range ps.Spec.Data {
-		if data.Match.RemoteRef.RemoteKey == secretIdentifier {
+		if util.SecretIdentifierMatches(data.Match.RemoteRef.RemoteKey, secretIdentifier) {
 			return true, nil
 		}
 	}

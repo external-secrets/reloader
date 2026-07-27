@@ -144,14 +144,14 @@ func (h *Handler) _references(obj client.Object, secretIdentifier string) (bool,
 	}
 	// Check Data field
 	for _, data := range es.Spec.Data {
-		if data.RemoteRef.Key == secretIdentifier {
+		if util.SecretIdentifierMatches(data.RemoteRef.Key, secretIdentifier) {
 			return true, nil
 		}
 	}
 
 	// Check DataFrom field
 	for _, dataFrom := range es.Spec.DataFrom {
-		if dataFrom.Extract != nil && dataFrom.Extract.Key == secretIdentifier {
+		if dataFrom.Extract != nil && util.SecretIdentifierMatches(dataFrom.Extract.Key, secretIdentifier) {
 			return true, nil
 		}
 		// Handle RegExp matching if needed

@@ -203,6 +203,45 @@ func TestHandler_References_RemoteRefKey(t *testing.T) {
 	}
 }
 
+// TestHandler_References_DataFromExtractAWSARN verifies that an ExternalSecret
+// referencing a secret by its AWS Secrets Manager friendly name (the
+// conventional way to configure dataFrom.extract.key) is still considered
+// referenced when the event's secretIdentifier is the full ARN that AWS
+// notification sources (e.g. AwsSqs reading CloudTrail's
+// requestParameters.secretId) actually deliver.
+func TestHandler_References_DataFromExtractAWSARN(t *testing.T) {
+	h := newHandlerWithDefaults()
+	es := &esov1.ExternalSecret{
+		ObjectMeta: metav1.ObjectMeta{Name: "ai-gateway", Namespace: "ai-gateway"},
+		Spec: esov1.ExternalSecretSpec{
+			DataFrom: []esov1.ExternalSecretDataFromRemoteRef{
+				{Extract: &esov1.ExternalSecretDataRemoteRef{Key: "platform/ai-gateway/service-secrets"}},
+			},
+		},
+	}
+	ref, err := h.References(es, "arn:aws:secretsmanager:us-east-1:051826739313:secret:platform/ai-gateway/service-secrets-78YXTj")
+	if err != nil {
+		t.Fatalf("References: %v", err)
+	}
+	if !ref {
+		t.Error("expected References to return true when dataFrom.extract.key matches the friendly name embedded in an AWS Secrets Manager ARN")
+	}
+}
+
+// TestHandler_References_RemoteRefKeyAWSARN is the same as
+// TestHandler_References_DataFromExtractAWSARN but for spec.data[].remoteRef.key.
+func TestHandler_References_RemoteRefKeyAWSARN(t *testing.T) {
+	h := newHandlerWithDefaults()
+	es := externalSecretWithRemoteRefKey("es", "platform/ai-gateway/service-secrets")
+	ref, err := h.References(es, "arn:aws:secretsmanager:us-east-1:051826739313:secret:platform/ai-gateway/service-secrets-78YXTj")
+	if err != nil {
+		t.Fatalf("References: %v", err)
+	}
+	if !ref {
+		t.Error("expected References to return true when remoteRef.key matches the friendly name embedded in an AWS Secrets Manager ARN")
+	}
+}
+
 // TestHandler_References_NotExternalSecret verifies that passing a non-ExternalSecret
 // object returns an error.
 func TestHandler_References_NotExternalSecret(t *testing.T) {
