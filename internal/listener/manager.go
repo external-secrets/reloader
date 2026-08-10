@@ -41,6 +41,12 @@ func NewListenerManager(ctx context.Context, eventChan chan events.SecretRotatio
 
 // ManageListeners manages the active listeners based on the provided notification sources. It starts new listeners and stops unwanted ones.
 func (lm *Manager) ManageListeners(manifestName types.NamespacedName, sources []esov1alpha1.NotificationSource) error {
+	if sources != nil {
+		if err := (&esov1alpha1.ConfigSpec{NotificationSources: sources}).Validate(); err != nil {
+			return err
+		}
+	}
+
 	lm.mu.Lock()
 	// Register listener for that manifest if we haven't
 	if _, ok := lm.listeners[manifestName]; !ok {
@@ -70,6 +76,13 @@ func (lm *Manager) ManageListeners(manifestName types.NamespacedName, sources []
 		}
 	}
 
+	webhookSourceCount := 0
+	for _, source := range desiredListeners {
+		if source.Type == schema.WEBHOOK {
+			webhookSourceCount++
+		}
+	}
+
 	// Add new listeners
 	for key, source := range desiredListeners {
 		if _, exists := lm.listeners[manifestName][key]; exists {
@@ -94,9 +107,10 @@ func (lm *Manager) ManageListeners(manifestName types.NamespacedName, sources []
 				}
 				webhookCfg = &esov1alpha1.WebhookConfig{}
 			}
+			routeKey := webhook.RouteKey(manifestName.Name, webhookCfg.PathSuffix, key, webhookSourceCount)
 			eventListener := webhook.NewWebhookListener(
 				lm.webhookServer,
-				manifestName.Name,
+				routeKey,
 				lm.context,
 				webhookCfg,
 				lm.client,

@@ -68,8 +68,8 @@ metrics:
   listen:
     port: 8443
   # When true, /metrics is served over HTTPS (and requires Kubernetes auth for scrapers).
-  # When false, /metrics is plain HTTP — matches default Prometheus ServiceMonitor scraping.
-  secure: false
+  # When false, /metrics is plain HTTP — set serviceMonitor.scheme to http if you scrape over HTTP.
+  secure: true
   service:
     enabled: false
     port: 8443

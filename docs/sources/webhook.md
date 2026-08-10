@@ -8,7 +8,11 @@ The controller runs a **single shared HTTP server** for all `Config` resources. 
 
 `POST /webhook/<Config.metadata.name>`
 
-There is no per-CR URL path or bind address; callers use the `Config` name in the path.
+When a webhook source sets **`pathSuffix`**, the route becomes:
+
+`POST /webhook/<Config.metadata.name>/<pathSuffix>`
+
+There is no per-CR bind address; callers use the `Config` name and optional suffix in the path.
 
 ## Breaking changes (v2.0.0)
 
@@ -21,8 +25,27 @@ Configure a `NotificationSource` with `type: Webhook` and a `webhook` block. The
 ### Key fields
 
 * **identifierPathOnPayload**: JSON path in the POST body for the secret identifier. It must match the name of the secret being rotated. If omitted, the default path is `0.data.ObjectName`.
+* **pathSuffix** (optional): URL path segment for this webhook source. When set, callers POST to `/webhook/<Config.metadata.name>/<pathSuffix>`. Use distinct suffixes when a `Config` defines multiple webhook notification sources. At most one webhook source may omit `pathSuffix`.
 * **webhookAuth** (optional): Basic or bearer authentication for incoming requests.
 * **retryPolicy** (optional): Retry failed publishes to the internal event channel.
+
+#### Multiple webhook sources on one Config
+
+A `Config` can define more than one `type: Webhook` entry. Give each source a unique **`pathSuffix`** so callers know which endpoint to use:
+
+```yaml
+notificationSources:
+  - type: Webhook
+    webhook:
+      pathSuffix: keeper-security
+      identifierPathOnPayload: "0.data.ObjectName"
+  - type: Webhook
+    webhook:
+      pathSuffix: vault-events
+      identifierPathOnPayload: "secret.name"
+```
+
+For a `Config` named `keeper`, callers POST to `/webhook/keeper/keeper-security` or `/webhook/keeper/vault-events`. Each `pathSuffix` must be unique within the `Config`, and at most one webhook source may omit it; duplicates (including multiple empty values) are rejected when listeners are managed.
 
 ### Payload structure
 
@@ -44,7 +67,7 @@ Here the identifier is at `0.data.ObjectName`, matching the secret name `my-secr
 
 ### Triggering a webhook notification
 
-Send an HTTP POST to the Reloader webhook base URL with path `/webhook/<your-config-name>`.
+Send an HTTP POST to the Reloader webhook base URL with path `/webhook/<your-config-name>` or `/webhook/<your-config-name>/<pathSuffix>` when `pathSuffix` is set.
 
 ```bash
 curl -X POST "http://<reloader-host>:<webhook-port>/webhook/my-reloader-config" \

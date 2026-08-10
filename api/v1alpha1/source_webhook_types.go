@@ -7,6 +7,15 @@ type WebhookConfig struct {
 	// +optional
 	SecretIdentifierOnPayload string `json:"identifierPathOnPayload,omitempty"`
 
+	// PathSuffix is an optional URL path segment for this webhook notification source.
+	// When set, the webhook is reachable at POST /webhook/<Config.metadata.name>/<pathSuffix>.
+	// Use distinct suffixes when a Config defines multiple webhook notification sources.
+	// At most one webhook source may omit pathSuffix; duplicate values (including multiple empty) are rejected.
+	// +optional
+	// +kubebuilder:validation:MaxLength=63
+	// +kubebuilder:validation:Pattern=`^[a-zA-Z0-9]([a-zA-Z0-9_-]*[a-zA-Z0-9])?$`
+	PathSuffix string `json:"pathSuffix,omitempty"`
+
 	// Auth is the authentication method for the webhook
 	// +optional
 	Auth *WebhookAuth `json:"webhookAuth,omitempty"`

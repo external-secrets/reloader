@@ -185,40 +185,47 @@ func (r *route) handleRetries() {
 			if !ok {
 				return
 			}
-			if r.ctx.Err() != nil {
-				return
-			}
+			r.retryMessage(message, maxRetries)
+		}
+	}
+}
 
-			beforeOrNow := message.retryAt.Compare(time.Now()) <= 0
-			if beforeOrNow {
-				err := r.processEvent(message.event)
-				if err == nil {
-					r.logger.Info(fmt.Sprintf(
-						"Message for '%s' successfully processed after %d retries",
-						message.event.SecretIdentifier,
-						message.currentRun,
-					))
-					continue
-				}
+func (r *route) retryMessage(message *retryMessage, maxRetries int) {
+	for {
+		if r.ctx.Err() != nil {
+			return
+		}
 
-				if message.currentRun >= maxRetries {
-					r.logger.Error(err, fmt.Sprintf(
-						"Message for '%s' was not processed after %d retries",
-						message.event.SecretIdentifier,
-						message.currentRun,
-					))
-					continue
-				}
-
-				message.currentRun++
-				message.retryAt = getNextRetryAt(r.config.RetryPolicy.Algorithm, message.currentRun)
-			}
+		wait := time.Until(message.retryAt)
+		if wait > 0 {
 			select {
-			case r.retryQueue <- message:
+			case <-time.After(wait):
 			case <-r.ctx.Done():
 				return
 			}
 		}
+
+		err := r.processEvent(message.event)
+		if err == nil {
+			r.logger.Info(fmt.Sprintf(
+				"Message for '%s' successfully processed after %d retries",
+				message.event.SecretIdentifier,
+				message.currentRun,
+			))
+			return
+		}
+
+		if message.currentRun >= maxRetries {
+			r.logger.Error(err, fmt.Sprintf(
+				"Message for '%s' was not processed after %d retries",
+				message.event.SecretIdentifier,
+				message.currentRun,
+			))
+			return
+		}
+
+		message.currentRun++
+		message.retryAt = getNextRetryAt(r.config.RetryPolicy.Algorithm, message.currentRun)
 	}
 }
 

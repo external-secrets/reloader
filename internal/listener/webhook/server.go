@@ -18,7 +18,8 @@ import (
 const webhookRoutePrefix = "/webhook/"
 
 // WebhookServer manages a single shared HTTP server for all webhook Config CRs.
-// Each Config gets a route at POST /webhook/{config-name}.
+// Each Config gets a route at POST /webhook/{config-name}, or POST /webhook/{config-name}/{pathSuffix}
+// when pathSuffix is set on the webhook notification source.
 type WebhookServer struct {
 	addr           string
 	server         *http.Server
@@ -50,14 +51,14 @@ func (s *WebhookServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	configName, ok := configNameFromPath(req.URL.Path)
+	routeKey, ok := routeKeyFromPath(req.URL.Path)
 	if !ok {
 		http.NotFound(w, req)
 		return
 	}
 
 	s.mu.RLock()
-	route, found := s.routes[configName]
+	route, found := s.routes[routeKey]
 	s.mu.RUnlock()
 	if !found {
 		http.NotFound(w, req)
@@ -67,15 +68,51 @@ func (s *WebhookServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	recoverMiddleware(route.handle, s.logger)(w, req)
 }
 
-func configNameFromPath(path string) (string, bool) {
+func routeKeyFromPath(path string) (string, bool) {
 	if !strings.HasPrefix(path, webhookRoutePrefix) {
 		return "", false
 	}
-	configName := strings.TrimPrefix(path, webhookRoutePrefix)
-	if configName == "" || strings.Contains(configName, "/") {
+	rest := strings.TrimPrefix(path, webhookRoutePrefix)
+	if rest == "" {
 		return "", false
 	}
-	return configName, true
+	parts := strings.Split(rest, "/")
+	switch len(parts) {
+	case 1:
+		return parts[0], true
+	case 2:
+		if parts[0] == "" || parts[1] == "" {
+			return "", false
+		}
+		return parts[0] + "/" + parts[1], true
+	default:
+		return "", false
+	}
+}
+
+// RouteKey returns the HTTP route key for a webhook notification source.
+// An explicit pathSuffix yields {configName}/{pathSuffix}. Without a suffix, a single
+// webhook source keeps the Config name; additional sources on the same Config fall
+// back to {configName}/{listenerHash} so routes are not overwritten.
+func RouteKey(configName, pathSuffix, listenerKey string, webhookSourceCount int) string {
+	if pathSuffix != "" {
+		return configName + "/" + pathSuffix
+	}
+	if webhookSourceCount <= 1 {
+		return configName
+	}
+	const prefix = "Webhook-"
+	suffix := listenerKey
+	if strings.HasPrefix(listenerKey, prefix) {
+		suffix = listenerKey[len(prefix):]
+	}
+	return configName + "/" + suffix
+}
+
+// NeedLeaderElection implements manager.LeaderElectionRunnable so the shared
+// webhook server only listens on the elected leader when leader election is enabled.
+func (s *WebhookServer) NeedLeaderElection() bool {
+	return true
 }
 
 // Start implements manager.Runnable: listens until ctx is cancelled, then shuts down gracefully.
@@ -120,38 +157,38 @@ func (s *WebhookServer) closeHTTPServer(ctx context.Context) error {
 	return shutdownErr
 }
 
-// Register adds or replaces the route for the given Config name.
-func (s *WebhookServer) Register(configName string, routeCtx context.Context, cfg *v1alpha1.WebhookConfig, k8sClient client.Client, eventChan chan events.SecretRotationEvent, logger logr.Logger) {
+// Register adds or replaces the route for the given route key.
+func (s *WebhookServer) Register(routeKey string, routeCtx context.Context, cfg *v1alpha1.WebhookConfig, k8sClient client.Client, eventChan chan events.SecretRotationEvent, logger logr.Logger) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	if existing, ok := s.routes[configName]; ok {
+	if existing, ok := s.routes[routeKey]; ok {
 		existing.shutdown()
 	}
 
-	r := newRoute(routeCtx, configName, cfg, k8sClient, eventChan, logger)
-	s.routes[configName] = r
+	r := newRoute(routeCtx, routeKey, cfg, k8sClient, eventChan, logger)
+	s.routes[routeKey] = r
 
-	s.logger.Info("Registered webhook route", "config", configName, "path", webhookRoutePrefix+configName)
+	s.logger.Info("Registered webhook route", "routeKey", routeKey, "path", webhookRoutePrefix+routeKey)
 }
 
-// Unregister removes the route for the given Config name.
-func (s *WebhookServer) Unregister(configName string) {
+// Unregister removes the route for the given route key.
+func (s *WebhookServer) Unregister(routeKey string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	if r, ok := s.routes[configName]; ok {
+	if r, ok := s.routes[routeKey]; ok {
 		r.shutdown()
-		delete(s.routes, configName)
-		s.logger.Info("Unregistered webhook route", "config", configName)
+		delete(s.routes, routeKey)
+		s.logger.Info("Unregistered webhook route", "routeKey", routeKey)
 	}
 }
 
-// HasRoute reports whether a route exists for configName.
-func (s *WebhookServer) HasRoute(configName string) bool {
+// HasRoute reports whether a route exists for routeKey.
+func (s *WebhookServer) HasRoute(routeKey string) bool {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
-	_, ok := s.routes[configName]
+	_, ok := s.routes[routeKey]
 	return ok
 }
 

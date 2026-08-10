@@ -31,7 +31,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	"sigs.k8s.io/controller-runtime/pkg/metrics/filters"
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
-	crtwebhook "sigs.k8s.io/controller-runtime/pkg/webhook"
 
 	externalsecrets "github.com/external-secrets/external-secrets/apis/externalsecrets/v1"
 	pushsecrets "github.com/external-secrets/external-secrets/apis/externalsecrets/v1alpha1"
@@ -100,28 +99,21 @@ func main() {
 		tlsOpts = append(tlsOpts, disableHTTP2)
 	}
 
-	crdWebhookServer := crtwebhook.NewServer(crtwebhook.Options{
-		TLSOpts: tlsOpts,
-	})
-
-	notificationWebhook := webhook.NewWebhookServer(webhookAddr, ctrl.Log.WithName("notification"))
-
 	metricsServerOptions := metricsserver.Options{
 		BindAddress:   metricsAddr,
 		SecureServing: secureMetrics,
-
-		TLSOpts: tlsOpts,
+		TLSOpts:       tlsOpts,
 	}
 
 	if secureMetrics {
-
 		metricsServerOptions.FilterProvider = filters.WithAuthenticationAndAuthorization
 	}
+
+	notificationWebhook := webhook.NewWebhookServer(webhookAddr, ctrl.Log.WithName("notification"))
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
 		Scheme:                 scheme,
 		Metrics:                metricsServerOptions,
-		WebhookServer:          crdWebhookServer,
 		HealthProbeBindAddress: probeAddr,
 		LeaderElection:         enableLeaderElection,
 		LeaderElectionID:       "0cd7d2f7.externalsecrets.com",
@@ -144,7 +136,6 @@ func main() {
 		setupLog.Error(err, "unable to create controller", "controller", "Reloader")
 		os.Exit(1)
 	}
-
 	// +kubebuilder:scaffold:builder
 
 	if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {

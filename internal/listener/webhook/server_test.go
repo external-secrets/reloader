@@ -112,22 +112,38 @@ func TestWebhookServer_ConcurrentRegisterWithRunningServer(t *testing.T) {
 	cancel()
 }
 
-func TestConfigNameFromPath(t *testing.T) {
+func TestRouteKeyFromPath(t *testing.T) {
 	tests := []struct {
 		path string
 		want string
 		ok   bool
 	}{
 		{"/webhook/myconfig", "myconfig", true},
+		{"/webhook/myconfig/abc123", "myconfig/abc123", true},
 		{"/webhook/", "", false},
-		{"/webhook/a/b", "", false},
+		{"/webhook/a/b/c", "", false},
 		{"/other/myconfig", "", false},
 	}
 	for _, tt := range tests {
-		got, ok := configNameFromPath(tt.path)
+		got, ok := routeKeyFromPath(tt.path)
 		if ok != tt.ok || got != tt.want {
-			t.Errorf("configNameFromPath(%q) = (%q, %v), want (%q, %v)", tt.path, got, ok, tt.want, tt.ok)
+			t.Errorf("routeKeyFromPath(%q) = (%q, %v), want (%q, %v)", tt.path, got, ok, tt.want, tt.ok)
 		}
+	}
+}
+
+func TestRouteKey(t *testing.T) {
+	if got := RouteKey("keeper", "", "Webhook-deadbeef", 1); got != "keeper" {
+		t.Fatalf("single webhook: got %q, want keeper", got)
+	}
+	if got := RouteKey("keeper", "vendor-a", "Webhook-deadbeef", 1); got != "keeper/vendor-a" {
+		t.Fatalf("pathSuffix: got %q, want keeper/vendor-a", got)
+	}
+	if got := RouteKey("keeper", "", "Webhook-deadbeef", 2); got != "keeper/deadbeef" {
+		t.Fatalf("multiple webhooks: got %q, want keeper/deadbeef", got)
+	}
+	if got := RouteKey("keeper", "vendor-a", "Webhook-deadbeef", 2); got != "keeper/vendor-a" {
+		t.Fatalf("pathSuffix with multiple webhooks: got %q, want keeper/vendor-a", got)
 	}
 }
 
