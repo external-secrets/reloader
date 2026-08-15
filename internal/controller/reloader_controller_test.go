@@ -57,7 +57,7 @@ var _ = Describe("Reloader Controller", func() {
 		fakeClient = fake.NewClientBuilder().WithScheme(scheme).Build()
 
 		eventChan = make(chan events.SecretRotationEvent, 10)
-		manager := listener.NewListenerManager(ctx, eventChan, fakeClient, log.FromContext(ctx))
+		manager := listener.NewListenerManager(ctx, eventChan, fakeClient, log.FromContext(ctx), nil)
 		eventHandler := handler.NewEventHandler(fakeClient)
 
 		reconciler = &ReloaderReconciler{

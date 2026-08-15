@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"strings"
 
 	esov1alpha1 "github.com/external-secrets/reloader/api/v1alpha1"
 	"github.com/external-secrets/reloader/internal/listener/schema"
@@ -78,5 +79,41 @@ func TestGenerateListenerKey_KubernetesConfigMap_UnsupportedType(t *testing.T) {
 	_, err := generateListenerKey(source)
 	if err == nil {
 		t.Fatal("expected error for unsupported type")
+	}
+}
+
+func TestGenerateListenerKey_Webhook(t *testing.T) {
+	s1 := esov1alpha1.NotificationSource{
+		Type: schema.WEBHOOK,
+		Webhook: &esov1alpha1.WebhookConfig{
+			SecretIdentifierOnPayload: "custom.path",
+		},
+	}
+	s2 := esov1alpha1.NotificationSource{
+		Type: schema.WEBHOOK,
+		Webhook: &esov1alpha1.WebhookConfig{
+			SecretIdentifierOnPayload: "other.path",
+		},
+	}
+	key1, err := generateListenerKey(s1)
+	if err != nil {
+		t.Fatalf("generateListenerKey: %v", err)
+	}
+	key2, err := generateListenerKey(s2)
+	if err != nil {
+		t.Fatalf("generateListenerKey s2: %v", err)
+	}
+	if !strings.HasPrefix(key1, schema.WEBHOOK+"-") {
+		t.Errorf("expected key to start with %q-, got %q", schema.WEBHOOK, key1)
+	}
+	if key1 == key2 {
+		t.Errorf("different webhook configs should produce different keys: %q", key1)
+	}
+	key1Again, err := generateListenerKey(s1)
+	if err != nil {
+		t.Fatalf("generateListenerKey (second call): %v", err)
+	}
+	if key1 != key1Again {
+		t.Errorf("same webhook config should produce same key: %q vs %q", key1, key1Again)
 	}
 }

@@ -9,5 +9,4 @@ import (
 	_ "github.com/external-secrets/reloader/internal/listener/pubsub"
 	_ "github.com/external-secrets/reloader/internal/listener/sqs"
 	_ "github.com/external-secrets/reloader/internal/listener/tcp"
-	_ "github.com/external-secrets/reloader/internal/listener/webhook"
 )

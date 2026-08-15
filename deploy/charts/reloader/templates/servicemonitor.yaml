@@ -26,5 +26,10 @@ spec:
       interval: {{ .Values.serviceMonitor.interval }}
       scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
       honorLabels: {{ .Values.serviceMonitor.honorLabels }}
+      {{- if .Values.metrics.secure }}
+      scheme: https
+      tlsConfig:
+        insecureSkipVerify: true
+      {{- end }}
 {{- end }}
 {{- end }}

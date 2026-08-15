@@ -2,20 +2,19 @@ package v1alpha1
 
 // WebhookConfig contains configuration for Webhook notifications.
 type WebhookConfig struct {
-	// Path that the webhook will receive the notifications.
-	// If not present `/webhook` will be used. The path always expects a POST and this is not configurable
-	// +optional
-	Path string `json:"path"`
-
-	// Address is the address where the webhook will be served in your infrastructure.
-	// If not present, defaults to `:8090`
-	// +optional
-	Address string `json:"address"`
-
 	// SecretIdentifierOnPayload is the key that the reloader will look for in the payload.
 	// The value of this key should be the same name as in the external secret. It will default to `0.data.ObjectName` if not set
 	// +optional
 	SecretIdentifierOnPayload string `json:"identifierPathOnPayload,omitempty"`
+
+	// PathSuffix is an optional URL path segment for this webhook notification source.
+	// When set, the webhook is reachable at POST /webhook/<Config.metadata.name>/<pathSuffix>.
+	// Use distinct suffixes when a Config defines multiple webhook notification sources.
+	// At most one webhook source may omit pathSuffix; duplicate values (including multiple empty) are rejected.
+	// +optional
+	// +kubebuilder:validation:MaxLength=63
+	// +kubebuilder:validation:Pattern=`^[a-zA-Z0-9]([a-zA-Z0-9_-]*[a-zA-Z0-9])?$`
+	PathSuffix string `json:"pathSuffix,omitempty"`
 
 	// Auth is the authentication method for the webhook
 	// +optional

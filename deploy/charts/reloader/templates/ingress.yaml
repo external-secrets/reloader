@@ -1,10 +1,13 @@
 {{- if .Values.ingress.enabled -}}
+{{- if not .Values.service.webhook.enabled }}
+{{- fail "ingress.enabled requires service.webhook.enabled (Ingress routes to the webhook Service)" }}
+{{- end }}
 {{- $fullName := include "reloader.fullname" . -}}
-{{- $svcPort := .Values.service.port -}}
+{{- $svcPort := .Values.service.webhook.port -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ $fullName }}-webhook
   namespace: {{ include "reloader.namespace" . }}
   labels:
     {{- include "reloader.labels" . | nindent 4 }}
@@ -33,10 +36,10 @@ spec:
         paths:
           {{- range .paths }}
           - path: {{ .path }}
-            pathType: {{ .pathType | default "ImplementationSpecific" }}
+            pathType: {{ .pathType | default "Prefix" }}
             backend:
               service:
-                name: {{ $fullName }}
+                name: {{ $fullName }}-webhook
                 port:
                   number: {{ $svcPort }}
           {{- end }}

@@ -115,7 +115,7 @@ ConfigSpec defines the desired state of a Reloader Config.
 
 | Field                 | Type                                                 | Description                                                                 | Validation |
 |----------------------|------------------------------------------------------|-----------------------------------------------------------------------------|------------|
-| `notificationSources`| [NotificationSource](#notificationsource) array      | NotificationSources specifies the notification systems to listen to.       |            |
+| `notificationSources`| [NotificationSource](#notificationsource) array      | NotificationSources specifies the notification systems to listen to.       | `pathSuffix` must be unique among webhook sources; at most one webhook may omit `pathSuffix` |
 | `destinationsToWatch`| [DestinationToWatch](#destinationtowatch) array      | DestinationsToWatch specifies which secrets the controller should monitor. |            |
 
 ### `DeploymentDestination`
@@ -410,8 +410,9 @@ WebhookConfig contains configuration for Webhook notifications.
 
 | Field                    | Type                          | Description                                                                                           | Validation |
 |--------------------------|-------------------------------|-------------------------------------------------------------------------------------------------------|------------|
-| `path`                   | string                        | Endpoint path (default: `/webhook`). Always expects a POST request.                                   |            |
-| `address`                | string                        | Address where the webhook is served. Defaults to `:8090`.                                             |            |
 | `identifierPathOnPayload`| string                        | Key in the payload used to identify the secret. Defaults to `0.data.ObjectName` if not set.           |            |
+| `pathSuffix`             | string                        | Optional URL path segment. When set, the webhook is reachable at `POST /webhook/<Config.metadata.name>/<pathSuffix>`. | Pattern: `^[a-zA-Z0-9]([a-zA-Z0-9_-]*[a-zA-Z0-9])?$`, MaxLength: 63 |
 | `webhookAuth`            | [WebhookAuth](#webhookauth)   | Authentication method for the webhook.                                                                |            |
 | `retryPolicy`            | [RetryPolicy](#retrypolicy)   | Policy to retry failed messages. If not set, 4xx will be returned and no retry will be attempted.     |            |
+
+The controller serves all webhook `Config` resources on one HTTP listener (`--webhook-bind-address`). Each `Config` is reachable at `POST /webhook/<Config.metadata.name>`, or `POST /webhook/<Config.metadata.name>/<pathSuffix>` when `pathSuffix` is set.
