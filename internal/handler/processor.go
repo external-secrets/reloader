@@ -10,6 +10,7 @@ import (
 	esov1alpha1 "github.com/external-secrets/reloader/api/v1alpha1"
 	"github.com/external-secrets/reloader/internal/events"
 	"github.com/external-secrets/reloader/internal/handler/schema"
+	"github.com/external-secrets/reloader/internal/matchstrategy"
 )
 
 type EventHandler struct {
@@ -40,12 +41,9 @@ func (h *EventHandler) HandleEvent(ctx context.Context, event events.SecretRotat
 			continue
 		}
 		h := prov.NewHandler(ctx, h.client, watchCriteria)
-		// Mutate Handler for different Update and Match Strategies
+		// Mutate Handler for different Update Strategies
 		if watchCriteria.UpdateStrategy != nil {
 			logger.Info("Optional Update strategies are not implemented", "UpdateStrategy", watchCriteria.UpdateStrategy)
-		}
-		if watchCriteria.MatchStrategy != nil {
-			logger.Info("Optional Match strategies are not implemented", "MatchStrategy", watchCriteria.MatchStrategy)
 		}
 		objs, err := h.Filter(&watchCriteria, event)
 		if err != nil {
@@ -53,7 +51,18 @@ func (h *EventHandler) HandleEvent(ctx context.Context, event events.SecretRotat
 		}
 		// Use Handler methods to figure out and apply objects
 		for _, obj := range objs {
-			isReferenced, err := h.References(obj, event.SecretIdentifier)
+			// When a MatchStrategy is configured, it replaces the destination
+			// type's built-in References() check entirely, so callers can
+			// correlate a destination against the event on their own terms
+			// (e.g. a custom path, or a comparison the built-in check doesn't
+			// support).
+			var isReferenced bool
+			var err error
+			if watchCriteria.MatchStrategy != nil {
+				isReferenced, err = matchstrategy.Evaluate(watchCriteria.MatchStrategy, obj, event)
+			} else {
+				isReferenced, err = h.References(obj, event.SecretIdentifier)
+			}
 			if err != nil {
 				// This error means something went wrong on a reference check - which is typically very bad
 				logger.Error(err, "failed to check if object is referenced", "name", obj.GetName(), "namespace", obj.GetNamespace(), "type", watchCriteria.Type)

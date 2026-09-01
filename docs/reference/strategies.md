@@ -46,17 +46,23 @@ destinationsToWatch:
 
 ## Match Strategy
 
-The Match Strategy controls how the Reloader determines whether a destination is affected by a given secret event. It evaluates a JSON path on the destination object against one or more conditions.
+By default, a destination decides for itself whether it's affected by an event: an `ExternalSecret`, for example, is considered affected if the event's identifier exactly matches one of its configured remote keys. A Match Strategy replaces that default check with your own: it evaluates a JSON path on the destination object against one or more conditions, so you can match on a different field, a substring, or a regular expression instead.
+
+A condition's `value` is rendered as a Go template before comparison, with the event bound to the template root, so you can reference the specific event being processed - for example `{{ .SecretIdentifier }}`. Available fields are `SecretIdentifier`, `RotationTimestamp`, `TriggerSource`, and `Namespace`. A `value` with no template actions is used as a literal string.
+
+If `path` resolves to multiple values (for example, a path containing `[*]`), the destination matches if *any* of those values satisfies *all* of the given conditions.
 
 ### Condition Operations
 
-| Operation           | Description                                    |
-|---------------------|------------------------------------------------|
-| `Equal`             | Exact value match.                             |
-| `NotEqual`          | Value does not match.                          |
-| `Contains`          | Value contains the given substring.            |
-| `NotContains`       | Value does not contain the given substring.    |
-| `RegularExpression` | Value matches the given regular expression.    |
+| Operation           | Description                                 |
+|---------------------|----------------------------------------------|
+| `Equal`             | Exact value match.                          |
+| `NotEqual`          | Value does not match.                       |
+| `Contains`          | Value contains the given substring.         |
+| `NotContains`       | Value does not contain the given substring. |
+| `ContainedBy`       | Value is a substring of the given value.    |
+| `NotContainedBy`    | Value is not a substring of the given value.|
+| `RegularExpression` | Value matches the given regular expression. |
 
 ### Example: Custom Match Path
 
@@ -86,6 +92,23 @@ destinationsToWatch:
       conditions:
         - value: "prod/.*"
           operation: RegularExpression
+```
+
+### Example: Matching a Friendly Name Against an ARN
+
+Some sources - such as `AwsSqs` reading CloudTrail's `PutSecretValue` events - surface a secret's full ARN as the event identifier, while an `ExternalSecret` conventionally references that same secret by its friendly name. `ContainedBy`, combined with templating, lets the friendly name match against the ARN it's embedded in:
+
+```yaml
+destinationsToWatch:
+  - type: ExternalSecret
+    externalSecret:
+      labelSelectors:
+        matchLabels: {}
+    matchStrategy:
+      path: "spec.dataFrom[*].extract.key"
+      conditions:
+        - value: "{{ .SecretIdentifier }}"
+          operation: ContainedBy
 ```
 
 ## Wait Strategy
