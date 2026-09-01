@@ -314,6 +314,66 @@ var _ = Describe("Reloader Controller", func() {
 			assertAnnotationsWithSource(fakeClient, esName, "2024-09-19T12:00:00Z", "KubernetesConfigMap")
 		})
 	})
+
+	Context("When a destination configures a MatchStrategy", func() {
+		It("should annotate an ExternalSecret referenced by friendly name when the event identifier is the full AWS Secrets Manager ARN", func() {
+			esName := "test-external-secret-matchstrategy"
+			friendlyName := "platform/ai-gateway/service-secrets"
+			arn := "arn:aws:secretsmanager:us-east-1:051826739313:secret:platform/ai-gateway/service-secrets-78YXTj"
+
+			// Add a second destination entry with its own MatchStrategy, so
+			// it doesn't affect the default References() behavior exercised
+			// by the other Contexts in this suite.
+			updatedConfig := &esov1.Config{}
+			Expect(fakeClient.Get(ctx, types.NamespacedName{Name: config.Name, Namespace: config.Namespace}, updatedConfig)).To(Succeed())
+			updatedConfig.Spec.DestinationsToWatch = append(updatedConfig.Spec.DestinationsToWatch, esov1.DestinationToWatch{
+				Type: "ExternalSecret",
+				ExternalSecret: &esov1.ExternalSecretDestination{
+					Names: []string{esName},
+				},
+				MatchStrategy: &esov1.MatchStrategy{
+					Path: "spec.dataFrom[*].extract.key",
+					Conditions: []esov1.Condition{
+						{Value: "{{ .SecretIdentifier }}", Operation: esov1.ConditionOperationContainedBy},
+					},
+				},
+			})
+			Expect(fakeClient.Update(ctx, updatedConfig)).To(Succeed())
+			_, err := reconciler.Reconcile(ctx, reconcile.Request{
+				NamespacedName: types.NamespacedName{Name: config.Name, Namespace: config.Namespace},
+			})
+			Expect(err).NotTo(HaveOccurred())
+
+			externalSecret = &esv1.ExternalSecret{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      esName,
+					Namespace: "default",
+				},
+				Spec: esv1.ExternalSecretSpec{
+					SecretStoreRef: esv1.SecretStoreRef{
+						Name: "my-secret-store",
+						Kind: "SecretStore",
+					},
+					DataFrom: []esv1.ExternalSecretDataFromRemoteRef{
+						{
+							Extract: &esv1.ExternalSecretDataRemoteRef{
+								Key: friendlyName,
+							},
+						},
+					},
+				},
+			}
+			Expect(fakeClient.Create(context.Background(), externalSecret)).To(Succeed())
+
+			eventChan <- events.SecretRotationEvent{
+				SecretIdentifier:  arn,
+				RotationTimestamp: "2026-07-23T17:25:37Z",
+				TriggerSource:     "aws-secretsmanager",
+			}
+
+			assertAnnotationsWithSource(fakeClient, esName, "2026-07-23T17:25:37Z", "aws-secretsmanager")
+		})
+	})
 })
 
 func assertAnnotations(fakeClient client.Client, secretName string) {
