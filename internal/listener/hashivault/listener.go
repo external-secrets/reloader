@@ -42,8 +42,7 @@ func (h *HashicorpVault) processFn(message []byte) {
 	// Removing "data" if any
 	path := strings.TrimPrefix(strings.Split(msg.AuthRequest.Path, basePath)[1], "data/")
 	switch msg.AuthRequest.Operation {
-	case "create":
-	case "update":
+	case "create", "update":
 		h.logger.V(1).Info("Received Valid Message", "Message", msg)
 		event := events.SecretRotationEvent{
 			SecretIdentifier:  path,
